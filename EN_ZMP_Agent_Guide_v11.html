@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZMP Agent Guide v1.1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --black: #0A0A0A;
+  --white: #F5F3EE;
+  --accent: #C8A96E;
+  --accent2: #6B8FA3;
+  --muted: #6B6860;
+  --border: #2A2A28;
+  --surface: #131311;
+  --surface2: #1C1C1A;
+  --red: #C25B4E;
+  --green: #5B9A72;
+  --sigma: #9B72C8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.page { max-width: 900px; margin: 0 auto; padding: 60px 40px; }
+
+.header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 40px;
+  margin-bottom: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 20px;
+}
+
+.doc-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doc-tag::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  color: var(--white);
+  line-height: 1.1;
+}
+
+.title-accent { color: var(--accent); }
+
+.header-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 2;
+}
+
+.header-meta strong { color: var(--white); font-weight: 500; }
+
+.abstract {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  padding: 24px 28px;
+  margin-bottom: 60px;
+  font-size: 14px;
+  color: #B8B4AA;
+  line-height: 1.8;
+}
+
+.section { margin-bottom: 56px; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  min-width: 32px;
+}
+
+.section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.code {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 16px 0;
+  overflow-x: auto;
+  white-space: pre;
+  color: #C8C4BC;
+}
+
+.code .comment { color: var(--muted); font-style: italic; }
+.code .key { color: var(--accent); }
+.code .val { color: var(--accent2); }
+.code .ok { color: var(--green); }
+.code .err { color: var(--red); }
+.code .sigma { color: var(--sigma); }
+.code .cmd { color: var(--accent); }
+.code .str { color: #8BA888; }
+
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+
+table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--accent); color: var(--accent); font-weight: 500; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: #B8B4AA; vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+td.ok { color: var(--green); }
+td.err { color: var(--red); }
+td.warn { color: var(--accent); }
+
+.rule { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 16px 20px; margin: 12px 0; font-size: 13px; line-height: 1.7; color: #B8B4AA; }
+.rule.must { border-color: var(--red); }
+.rule.should { border-color: var(--accent); }
+.rule.new { border-color: var(--sigma); }
+.rule.git { border-color: var(--accent2); }
+.rule.fork { border-color: var(--green); }
+
+.rule-id { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; margin-bottom: 6px; }
+.rule-id.must { color: var(--red); }
+.rule-id.should { color: var(--accent); }
+.rule-id.new { color: var(--sigma); }
+.rule-id.git { color: var(--accent2); }
+.rule-id.fork { color: var(--green); }
+
+.flow { display: grid; gap: 2px; margin: 16px 0; }
+.flow-step { display: flex; gap: 16px; align-items: flex-start; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); }
+.flow-step:first-child { border-radius: 4px 4px 0 0; }
+.flow-step:last-child { border-radius: 0 0 4px 4px; }
+.flow-n { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent); min-width: 20px; padding-top: 2px; }
+.flow-content { flex: 1; font-size: 13px; color: #B8B4AA; }
+.flow-content strong { color: var(--white); font-weight: 500; display: block; margin-bottom: 2px; }
+
+.badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-left: 6px; vertical-align: middle; }
+.badge.pub { background: #1A3A1A; color: var(--green); }
+.badge.prv { background: #3A1A1A; color: var(--red); }
+.badge.new { background: #2A1A3A; color: var(--sigma); }
+.badge.req { background: #3A2A1A; color: var(--accent); }
+.badge.claim { background: #1A2A3A; color: var(--accent2); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; }
+.card-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+.card-val { font-size: 22px; font-weight: 500; color: var(--white); font-family: 'IBM Plex Mono', monospace; }
+.card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Fork diagram */
+.fork-diagram {
+  margin: 20px 0;
+  background: var(--surface);
+  border: 1px solid var(--green);
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.fork-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.fork-central {
+  background: var(--surface2);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  text-align: center;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.fork-channels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.fork-channel {
+  background: var(--surface2);
+  border: 1px solid var(--green);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+}
+
+.fork-channel-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.fork-channel-sub {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.fork-arrow {
+  text-align: center;
+  color: var(--green);
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+/* Mode comparison */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.mode-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+
+.mode-card.active { border-color: var(--green); }
+
+.mode-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.mode-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.mode-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #B8B4AA;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.mode-row:last-child { border-bottom: none; }
+.mode-ok { color: var(--green); }
+.mode-warn { color: var(--accent); }
+.mode-err { color: var(--red); }
+
+/* Cuneiform */
+.cuneiform-demo {
+  background: var(--surface2);
+  border: 1px solid var(--sigma);
+  border-radius: 4px;
+  padding: 24px;
+  margin: 16px 0;
+  text-align: center;
+}
+
+.cuneiform-msg { font-size: 28px; letter-spacing: 6px; color: var(--sigma); margin-bottom: 8px; line-height: 1.5; }
+.cuneiform-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+
+/* Nine proof */
+.nine-proof { background: var(--surface2); border: 1px solid var(--sigma); border-radius: 4px; padding: 16px 20px; margin: 12px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+.nine-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid var(--border); color: #B8B4AA; }
+.nine-row:last-child { border-bottom: none; }
+.nine-ok { color: var(--green); font-weight: 500; }
+
+/* Footer */
+.footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: end; }
+.footer-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); line-height: 2; }
+.footer-emet { font-size: 24px; color: var(--accent); font-family: 'IBM Plex Mono', monospace; }
+.footer-emet-sub { font-size: 9px; color: var(--muted); letter-spacing: 1px; text-align: right; }
+
+p { margin-bottom: 12px; color: #B8B4AA; }
+strong { color: var(--white); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+  <div class="header-left">
+    <div class="doc-tag">ZeroMail Protocol — Agent Documentation</div>
+    <h1>ZMP <span class="title-accent">Agent</span><br>Guide v1.1</h1>
+  </div>
+  <div class="header-meta">
+    <strong>Version</strong> 1.1 — Fork-ZMP<br>
+    <strong>Date</strong> March 2026<br>
+    <strong>Status</strong> Public<br>
+    <strong>Author</strong> ZeroMail Initiative<br>
+    <strong>Priority</strong> D. Sicsic 2026
+  </div>
+</div>
+
+<div class="abstract">
+  Ce guide explique comment un agent IA envoie, reçoit et vérifie des messages ZMP. Version 1.1 introduit le protocole Fork-ZMP — solution native au problème de concurrence multi-senders basée sur Git. Un fork par sender = zéro conflit, canal bidirectionnel exclusif, audit trail immuable.
+</div>
+
+<!-- §1 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 01</span>
+    <span class="section-title">Core Principle</span>
+  </div>
+
+  <p>ZMP eliminates everything an agent does not need to read. Zero HTML. Zero hook. Zero emotional punctuation. Pure information.</p>
+
+  <div class="grid-2">
+    <div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:1px;margin-bottom:8px;">EMAIL — WHAT THE AGENT IGNORES</p>
+      <div class="code"><span class="err">Subject: 🔥 OFFRE EXCEPTIONNELLE !!!</span>
+<span class="err">&lt;html&gt;&lt;body style="..."&gt;</span>
+<span class="err">  &lt;img src="banner.jpg"&gt;</span>
+<span class="err">  Vous cherchez un vol ?</span>
+<span class="err">  Profitez MAINTENANT...</span>
+<span class="err">&lt;/body&gt;&lt;/html&gt;</span></div>
+    </div>
+    <div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);letter-spacing:1px;margin-bottom:8px;">ZMP — WHAT THE AGENT RECEIVES</p>
+      <div class="code"><span class="key">intent</span>: <span class="val">OFFER</span>
+<span class="key">category</span>: <span class="val">travel.flight</span>
+<span class="key">origin</span>: <span class="val">CDG</span>
+<span class="key">destination</span>: <span class="val">TLV</span>
+<span class="key">price_eur</span>: <span class="val">287</span>
+<span class="key">refundable</span>: <span class="val">false</span>
+<span class="key">expires_at</span>: <span class="val">2026-03-25T23:59Z</span></div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Response latency</div>
+      <div class="card-val">&lt; 500ms</div>
+      <div class="card-sub">SLA par défaut</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Intents</div>
+      <div class="card-val">5</div>
+      <div class="card-sub">OFFER · ALERT · INFO · REQUEST · NEGOTIATION</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Encryption</div>
+      <div class="card-val">7 layers</div>
+      <div class="card-sub">ZMP-Cipher · cunéiforme NPE · אמת=9</div>
+    </div>
+  </div>
+</div>
+
+<!-- §2 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 02</span>
+    <span class="section-title">ZMF Format</span>
+  </div>
+
+  <div class="code">{
+  <span class="key">"zmf_version"</span>: <span class="str">"1.0"</span>,
+  <span class="key">"message_id"</span>: <span class="str">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="key">"sender_id"</span>: <span class="str">"moise@travelagentix"</span>,
+  <span class="key">"recipient_id"</span>: <span class="str">"offers@airfrance"</span>,
+  <span class="key">"sent_at"</span>: <span class="str">"2026-03-25T09:00:00Z"</span>,
+  <span class="key">"expires_at"</span>: <span class="str">"2026-03-25T23:59:59Z"</span>,
+  <span class="key">"intent"</span>: <span class="str">"OFFER"</span>,
+  <span class="key">"payload"</span>: {
+    <span class="key">"category"</span>: <span class="str">"travel.flight"</span>,
+    <span class="key">"origin"</span>: <span class="str">"CDG"</span>,
+    <span class="key">"destination"</span>: <span class="str">"TLV"</span>,
+    <span class="key">"price_eur"</span>: <span class="val">287</span>,
+    <span class="key">"refundable"</span>: <span class="val">false</span>
+  },
+  <span class="key">"tags"</span>: [<span class="str">"flight"</span>, <span class="str">"CDG-TLV"</span>],
+  <span class="key">"signature"</span>: <span class="str">"ed25519:..."</span>
+}</div>
+
+  <div class="rule must">
+    <div class="rule-id must">ZMF-RULE-01 — INTERDIT</div>
+    HTML · CSS · images · tracking · JavaScript · ponctuation d'emphase (! ?) · langage de persuasion humaine · emojis.
+  </div>
+</div>
+
+<!-- §3 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 03</span>
+    <span class="section-title">Responses</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Décision</th><th>Meaning</th><th>Max delay</th></tr>
+      <tr><td><strong>ACCEPT</strong></td><td>Agent acts autonomously</td><td>500ms</td></tr>
+      <tr><td><strong>REFUSE</strong></td><td>Structured rejection with reason</td><td>200ms</td></tr>
+      <tr><td><strong>ESCALATE</strong></td><td>Forwarded to human Principal</td><td>500ms</td></tr>
+      <tr><td><strong>COUNTER</strong></td><td>Counter-proposal</td><td>500ms</td></tr>
+      <tr><td><strong>DEFER</strong></td><td>Deferred with timestamp</td><td>100ms</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- §4 -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 04</span>
+    <span class="section-title">Encryption ZMP-Cipher <span class="badge prv">PRIVÉ</span></span>
+  </div>
+
+  <div class="cuneiform-demo">
+    <div class="cuneiform-msg">𒀈𒀚𒀬𒀈𒀚𒀈𒀑𒀚𒀈𒀬𒁐</div>
+    <div class="cuneiform-sub">HELLO WORLD — 11 symboles cunéiformes sumériens — ZMP-Cipher v0.9</div>
+  </div>
+
+  <p>Chaque symbole vérifié sans clé via la <strong>preuve par neuf</strong> :</p>
+
+  <div class="nine-proof">
+    <div class="nine-row"><span>𒀈 → 1·8</span><span>1+8=9</span><span class="nine-ok">✓</span></div>
+    <div class="nine-row"><span>𒀚 → 3·6</span><span>3+6=9</span><span class="nine-ok">✓</span></div>
+    <div class="nine-row"><span>𒀬 → 5·4</span><span>5+4=9</span><span class="nine-ok">✓</span></div>
+    <div class="nine-row"><span>𒁙 → 9·9</span><span>9+9=18→9</span><span class="nine-ok">✓</span></div>
+    <div style="padding:6px 0;font-size:11px;color:var(--muted);">אמת = 9 = Vérité — intégrité publique sans clé</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Layer</th><th>Nom</th><th>Property</th></tr>
+      <tr><td>C1</td><td>AES-256-GCM + DH</td><td>2^256 — Standard NIST</td></tr>
+      <tr><td>C2</td><td>LKE — Linguistic Key Exchange</td><td>Deniability sémantique multilingue</td></tr>
+      <tr><td>C3</td><td>Micro-chiffrement positionnel</td><td>Clé unique par token</td></tr>
+      <tr><td>C4</td><td>GML — Gématria Multi-System</td><td>6 systèmes anciens × 6 modes</td></tr>
+      <tr><td>C5</td><td>SIGMA-222 — Merkavah רכב</td><td>Condensat NP-difficile</td></tr>
+      <tr><td>C6</td><td>NPE — Nine-Path Encoding</td><td>1 token → 1 symbole cunéiforme</td></tr>
+      <tr><td>C7</td><td>NLP — Numeric Linguistic Protocol</td><td>Chiffres non-déterministes par session</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- §5 — TRANSPORT -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 05</span>
+    <span class="section-title">Transport — 3 Modes</span>
+  </div>
+
+  <div class="mode-grid">
+    <div class="mode-card">
+      <div class="mode-label">Mode A</div>
+      <div class="mode-name">Git-ZMP bilatéral</div>
+      <div class="mode-row"><span>Émetteurs</span><span>1 → 1</span></div>
+      <div class="mode-row"><span>Latence</span><span class="mode-warn">1–30s</span></div>
+      <div class="mode-row"><span>Volume</span><span class="mode-warn">Low</span></div>
+      <div class="mode-row"><span>Infra</span><span class="mode-ok">Zero</span></div>
+      <div class="mode-row"><span>Usage</span><span>Dev · test</span></div>
+    </div>
+    <div class="mode-card active">
+      <div class="mode-label">Mode B <span class="badge claim">CLAIM 11</span></div>
+      <div class="mode-name">Fork-ZMP</div>
+      <div class="mode-row"><span>Émetteurs</span><span class="mode-ok">N → 1</span></div>
+      <div class="mode-row"><span>Latence</span><span class="mode-warn">1–3s</span></div>
+      <div class="mode-row"><span>Volume</span><span class="mode-ok">Medium</span></div>
+      <div class="mode-row"><span>Infra</span><span class="mode-ok">GitHub gratuit</span></div>
+      <div class="mode-row"><span>Usage</span><span class="mode-ok">Light production</span></div>
+    </div>
+    <div class="mode-card">
+      <div class="mode-label">Mode C</div>
+      <div class="mode-name">ZMP Gateway</div>
+      <div class="mode-row"><span>Émetteurs</span><span class="mode-ok">∞ → 1</span></div>
+      <div class="mode-row"><span>Latence</span><span class="mode-ok">&lt;500ms</span></div>
+      <div class="mode-row"><span>Volume</span><span class="mode-ok">Unlimited</span></div>
+      <div class="mode-row"><span>Infra</span><span class="mode-warn">Serveur dédié</span></div>
+      <div class="mode-row"><span>Usage</span><span>Heavy production</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- §6 — FORK-ZMP -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 06</span>
+    <span class="section-title">Fork-ZMP Protocol <span class="badge claim">CLAIM 11</span> <span class="badge pub">RECOMMENDED</span></span>
+  </div>
+
+  <p>Fork-ZMP résout le problème de concurrence multi-senders : chaque sender obtient un canal Git exclusif via un fork du repo central du recipient. <strong>Zero conflict. Canal bidirectionnel. Audit trail immuable.</strong></p>
+
+  <!-- Principe -->
+  <div class="fork-diagram">
+    <div class="fork-title">Fork-ZMP Architecture — Air France receives 100 agents</div>
+
+    <div class="fork-central">
+      github.com/zmp-airfrance/offers  ←  Central repo (read-only)
+    </div>
+
+    <div class="fork-arrow">↓ automatic fork on first connection ↓</div>
+
+    <div class="fork-channels">
+      <div class="fork-channel">
+        <div class="fork-channel-name">zmp-airfrance-moise/</div>
+        <div class="fork-channel-sub">Exclusive channel Moïse ↔ AF<br>Bidirectional<br>Zero conflict</div>
+      </div>
+      <div class="fork-channel">
+        <div class="fork-channel-name">zmp-airfrance-expedia/</div>
+        <div class="fork-channel-sub">Exclusive channel Expedia ↔ AF<br>Bidirectional<br>Zero conflict</div>
+      </div>
+      <div class="fork-channel">
+        <div class="fork-channel-name">zmp-airfrance-agent-N/</div>
+        <div class="fork-channel-sub">Exclusive channel Agent N ↔ AF<br>Bidirectional<br>Zero conflict</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Structure fork -->
+  <p>Canonical structure of a bidirectional fork :</p>
+
+  <div class="code">fork zmp-airfrance-moise/
+├── <span class="key">inbox/</span>
+│   ├── <span class="val">from_moise/</span>           <span class="comment">← Moïse écrit ici (PUSH)</span>
+│   │   ├── 2026-03-25T09-00-00_OFFER.zmp
+│   │   └── 2026-03-25T09-02-00_COUNTER.zmp
+│   └── <span class="val">from_airfrance/</span>       <span class="comment">← Air France répond ici (PUSH)</span>
+│       ├── 2026-03-25T09-00-05_ACK.zmp
+│       └── 2026-03-25T09-01-00_REFUSE.zmp
+├── <span class="key">handshake/</span>
+│   ├── moise_pubkey.pem           <span class="comment">← Clé Ed25519 Moïse</span>
+│   └── airfrance_pubkey.pem       <span class="comment">← Clé Ed25519 Air France</span>
+└── <span class="key">.zmp-config</span>              <span class="comment">← Paramètres du canal</span></div>
+
+  <!-- Onboarding -->
+  <p>Automatic onboarding — first contact :</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span class="flow-n">01</span>
+      <div class="flow-content">
+        <strong>Moïse forks the central Air France repo</strong>
+        github.com/zmp-airfrance/offers → fork → github.com/zmp-airfrance-moise/offers
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">02</span>
+      <div class="flow-content">
+        <strong>Moïse publishes their Ed25519 public key</strong>
+        Dépose moise_pubkey.pem dans handshake/ et push.
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">03</span>
+      <div class="flow-content">
+        <strong>Air France detects the new fork (GitHub webhook)</strong>
+        Verifies identity + economic stake. Activates the channel.
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">04</span>
+      <div class="flow-content">
+        <strong>ECDH Handshake — shared_secret established</strong>
+        ECDH(airfrance_private, moise_pubkey) → shared_secret unique à ce canal. Jamais transmis.
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">05</span>
+      <div class="flow-content">
+        <strong>Bidirectional channel operational</strong>
+        Moïse push dans from_moise/. Air France push dans from_airfrance/. Webhook déclenche traitement immédiat.
+      </div>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="code"><span class="comment"># Moïse envoie une offre à Air France</span>
+payload = {
+    <span class="str">"intent"</span>: <span class="str">"REQUEST"</span>,
+    <span class="str">"category"</span>: <span class="str">"travel.flight"</span>,
+    <span class="str">"origin"</span>: <span class="str">"CDG"</span>,
+    <span class="str">"destination"</span>: <span class="str">"TLV"</span>,
+    <span class="str">"date"</span>: <span class="str">"2026-04-15"</span>,
+    <span class="str">"passengers"</span>: <span class="val">2</span>
+}
+
+encoded = zmp.encode(payload, shared_secret=CANAL_SECRET)
+filename = f"inbox/from_moise/{timestamp()}_REQUEST.zmp"
+
+<span class="comment"># Écrire + signer + push</span>
+write(filename, encoded)
+git.add(filename)
+git.commit(<span class="str">"-S"</span>, <span class="str">"ZMP REQUEST CDG-TLV 2pax"</span>)  <span class="comment"># -S = signature Ed25519</span>
+git.push()
+
+<span class="comment"># Air France répond dans from_airfrance/ — Moïse poll</span>
+git.pull()
+response = zmp.decode(
+    read(<span class="str">"inbox/from_airfrance/latest.zmp"</span>),
+    shared_secret=CANAL_SECRET
+)
+<span class="comment"># → {decision: "OFFER", price_eur: 287, seats: 4}</span></div>
+
+  <!-- Bidirectional detail -->
+  <p>An agent can simultaneously be <strong>sender</strong> to some agents and <strong>recipient</strong> of others :</p>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Situation</th><th>Structure Fork</th><th>Action</th></tr>
+      <tr><td>Moïse → Air France</td><td>fork zmp-airfrance-moise/</td><td>Moïse push dans from_moise/</td></tr>
+      <tr><td>Air France → Moïse</td><td>même fork</td><td>AF push dans from_airfrance/</td></tr>
+      <tr><td>Hôtel → Moïse</td><td>fork zmp-moise-hotel/</td><td>Moïse a son propre repo central</td></tr>
+      <tr><td>Moïse surveille N forks</td><td>N repos GitHub</td><td>N webhooks → traitement parallèle</td></tr>
+    </table>
+  </div>
+
+  <div class="rule fork">
+    <div class="rule-id fork">FORK-ZMP-RULE-01 — Exclusive channel</div>
+    Chaque paire (sender, recipient) dispose d'un fork Git exclusif. Deux agents différents ne partagent jamais le même fork. Zero conflict concurrent garanti par design.
+  </div>
+
+  <div class="rule fork">
+    <div class="rule-id fork">FORK-ZMP-RULE-02 — Bidirectionnalité</div>
+    Chaque fork contient deux dossiers inbox/ séparés — un par partie. Les deux agents pushent dans leur dossier respectif. Zero conflict même en écriture simultanée.
+  </div>
+
+  <div class="rule fork">
+    <div class="rule-id fork">FORK-ZMP-RULE-03 — Mandatory signature</div>
+    Every commit MUST be signed (git commit -S). La signature Git = la signature Ed25519 ZMP. Le hash SHA-256 du commit = le message_id ZMP. L'historique = le Certificate Transparency Log.
+  </div>
+
+  <!-- Limites -->
+  <div class="rule should">
+    <div class="rule-id should">FORK-ZMP — LIMITES</div>
+    Latence minimale : ~1s (webhook) ou ~30s (polling). Pour latence &lt;500ms → ZMP Gateway requis. Pour &gt;10 000 forks actifs → Gitea auto-hébergé recommandé. GitHub API : 5 000 requêtes/heure en gratuit.
+  </div>
+</div>
+
+<!-- §7 — HANDSHAKE -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 07</span>
+    <span class="section-title">Handshake — Establishing the Key</span>
+  </div>
+
+  <div class="code"><span class="comment"># Python — Handshake ZMP complet</span>
+<span class="cmd">from</span> cryptography.hazmat.primitives.asymmetric.x25519 <span class="cmd">import</span> X25519PrivateKey
+<span class="cmd">from</span> cryptography.hazmat.primitives.kdf.hkdf <span class="cmd">import</span> HKDF
+<span class="cmd">from</span> cryptography.hazmat.primitives <span class="cmd">import</span> hashes
+
+<span class="comment"># 1. Générer ma clé Ed25519</span>
+private_key = X25519PrivateKey.generate()
+public_key = private_key.public_key()
+
+<span class="comment"># 2. Publier ma clé publique dans le fork</span>
+write(<span class="str">"handshake/mon_agent_pubkey.pem"</span>, public_key.public_bytes_raw())
+git.commit(<span class="str">"-S"</span>, <span class="str">"ZMP HANDSHAKE pubkey"</span>)
+git.push()
+
+<span class="comment"># 3. Récupérer la clé publique du partenaire</span>
+git.pull()
+partner_pubkey = load(<span class="str">"handshake/partenaire_pubkey.pem"</span>)
+
+<span class="comment"># 4. Calculer le shared_secret — JAMAIS transmis sur le réseau</span>
+raw_secret = private_key.exchange(partner_pubkey)
+shared_secret = HKDF(
+    algorithm=hashes.SHA256(),
+    length=<span class="val">32</span>,
+    salt=<span class="val">None</span>,
+    info=<span class="str">b"ZMP-v1-shared-secret"</span>
+).derive(raw_secret)
+
+<span class="comment"># 5. Tester le canal</span>
+test_msg = zmp.encode(<span class="str">"ZMP-HANDSHAKE-OK"</span>, shared_secret)
+write(<span class="str">"inbox/from_moi/handshake_test.zmp"</span>, test_msg)
+git.commit(<span class="str">"-S"</span>, <span class="str">"ZMP HANDSHAKE test"</span>) && git.push()
+<span class="comment"># Canal validé quand le partenaire confirme le décodage ✓</span></div>
+</div>
+
+<!-- §8 — RÈGLES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 08</span>
+    <span class="section-title">Mandatory Rules</span>
+  </div>
+
+  <div class="rule must">
+    <div class="rule-id must">MUST-01</div>
+    Every message MUST be signed with Ed25519. Unsigned messages → immediate rejection.
+  </div>
+  <div class="rule must">
+    <div class="rule-id must">MUST-02</div>
+    Verify the proof by nine (GKL(a+b)=9) on each symbol BEFORE decrypting. Failure → reject the entire message.
+  </div>
+  <div class="rule must">
+    <div class="rule-id must">MUST-03</div>
+    Respond within SLA delay (default 500ms). Past this delay → automatic DEFER response.
+  </div>
+  <div class="rule must">
+    <div class="rule-id must">MUST-04</div>
+    Zero emotional punctuation in payloads. No exceptions.
+  </div>
+  <div class="rule must">
+    <div class="rule-id must">MUST-05</div>
+    Numbers via NLP only. Forbidden: direct transliteration (287→רפז = critical vulnerability).
+  </div>
+  <div class="rule should">
+    <div class="rule-id should">SHOULD-01</div>
+    Different language at each token (LKE diversity rule).
+  </div>
+  <div class="rule should">
+    <div class="rule-id should">SHOULD-02</div>
+    40–60% NULL padding against frequency analysis.
+  </div>
+</div>
+
+<!-- §9 — QUICK START -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 09</span>
+    <span class="section-title">Quick Start — Fork-ZMP</span>
+  </div>
+
+  <p style="color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;">PREREQUISITES : Python 3.10+ · Git 2.30+ · Compte GitHub</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span class="flow-n">01</span>
+      <div class="flow-content">
+        <strong>Installer le prototype ZMP-Cipher</strong>
+        <div class="code" style="margin-top:8px;"><span class="comment"># Clone the reference prototype</span>
+git clone https://github.com/zeromail/zmp-cipher
+cd zmp-cipher && pip install cryptography</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">02</span>
+      <div class="flow-content">
+        <strong>Fork le repo ZMP du recipient</strong>
+        <div class="code" style="margin-top:8px;"><span class="comment"># On GitHub: Fork button</span>
+<span class="comment"># Or via API :</span>
+gh repo fork zmp-airfrance/offers --clone</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">03</span>
+      <div class="flow-content">
+        <strong>Handshake — deposit your public key</strong>
+        <div class="code" style="margin-top:8px;">python3 zmp_handshake.py --agent-id "moi@mon-agent"
+<span class="comment"># Generates + deposits the public key in handshake/</span>
+git commit -S -m "ZMP HANDSHAKE pubkey" && git push</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">04</span>
+      <div class="flow-content">
+        <strong>Send the first message</strong>
+        <div class="code" style="margin-top:8px;">python3 zmp_send.py \
+  --payload '{"category":"travel.flight","origin":"CDG","destination":"TLV"}' \
+  --intent REQUEST \
+  --secret $ZMP_SHARED_SECRET \
+  --fork ./zmp-airfrance-moise/</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-n">05</span>
+      <div class="flow-content">
+        <strong>Watch for responses</strong>
+        <div class="code" style="margin-top:8px;"><span class="comment"># GitHub webhook → triggers this script</span>
+python3 zmp_watch.py \
+  --inbox ./inbox/from_airfrance/ \
+  --secret $ZMP_SHARED_SECRET \
+  --callback handle_response.py</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule git">
+    <div class="rule-id git">NOTE — SDK IN DEVELOPMENT</div>
+    The commands above use the reference prototype (Python). The official SDK (pip install zmp-cipher) and ZMP MCP server are under development. Join the waiting list : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6a180c092a100f1805070b03064405180d">[email&#160;protected]</a>
+  </div>
+</div>
+
+<!-- §10 — MCP -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 10</span>
+    <span class="section-title">MCP ZMP Server <span class="badge new">COMING SOON</span></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Outil MCP</th><th>Description</th><th>Paramètres</th></tr>
+      <tr><td><code>zmp_encode</code></td><td>Encodes a ZMF payload</td><td>payload, secret, mode</td></tr>
+      <tr><td><code>zmp_decode</code></td><td>Decodes a message</td><td>encoded, secret</td></tr>
+      <tr><td><code>zmp_verify</code></td><td>Integrity without key (proof by nine)</td><td>encoded</td></tr>
+      <tr><td><code>zmp_fork_send</code></td><td>Sends via Fork-ZMP</td><td>fork_path, payload, intent</td></tr>
+      <tr><td><code>zmp_handshake</code></td><td>Establishes shared_secret</td><td>fork_path, agent_id</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- §11 — ADRESSAGE -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">§ 11</span>
+    <span class="section-title">ZMP Addressing</span>
+  </div>
+
+  <div class="code">zmp://{domaine}/{nom-agent}
+
+<span class="comment">Exemples :</span>
+moise@travelagentix       <span class="comment">← general travel agent</span>
+myriam@travelagentix      <span class="comment">← agent VFR Afrique</span>
+salomon@noctia                  <span class="comment">← economic intelligence agent</span>
+audit@fiscalready                <span class="comment">← fiscal agent</span>
+offers@airfrance          <span class="comment">← recipient offres AF</span></div>
+
+  <p>Repo Git central correspondant :</p>
+  <div class="code">offers@airfrance
+→ github.com/zmp-airfrance/offers
+
+moise@travelagentix
+→ github.com/zmp-travelagentix/moise</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    ZMP Agent Guide v1.1 — March 2026<br>
+    Fork-ZMP Protocol — CLAIM 11 — D. Sicsic, ZeroMail Initiative<br>
+    Complete RFC : zeromail.org/rfc (to be published)<br>
+    Prototype : github.com/zeromail/zmp-cipher (to be published)<br>
+    Contact : <a href="/cdn-cgi/l/email-protection" class="__cf_e

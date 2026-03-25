@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>ZeroMail Protocol RFC v0.9</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+:root { --black:#0A0A0A; --white:#F5F3EE; --accent:#C8A96E; --muted:#6B6860; --border:#2A2A28; --surface:#131311; --sigma:#9B72C8; --new:#0A7A4A; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--black); color:var(--white); font-family:'IBM Plex Sans',sans-serif; font-size:14px; line-height:1.8; }
+.page { max-width:860px; margin:0 auto; padding:60px 40px; }
+h1 { font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; color:var(--accent); margin-bottom:8px; }
+h2 { font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:500; text-transform:uppercase; letter-spacing:1.5px; margin:2rem 0 0.8rem; border-bottom:0.5px solid var(--border); padding-bottom:6px; }
+h3 { font-size:13px; font-weight:500; margin:1rem 0 0.4rem; color:var(--accent); }
+p { margin-bottom:0.8rem; color:#B8B4AA; }
+.meta { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:2rem; line-height:2; }
+.meta strong { color:var(--white); }
+.code { background:var(--surface); border:0.5px solid var(--border); border-radius:4px; padding:1rem; margin:0.8rem 0; font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.7; white-space:pre; overflow-x:auto; color:#C8C4BC; }
+.claim { background:var(--surface); border:0.5px solid var(--sigma); border-radius:4px; padding:0.8rem 1rem; margin:0.5rem 0; font-size:12px; }
+.claim-num { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--sigma); margin-bottom:4px; }
+.stack-row { display:flex; gap:12px; padding:8px 12px; border:0.5px solid var(--border); margin:2px 0; border-radius:3px; font-size:12px; }
+.stack-n { font-family:'IBM Plex Mono',monospace; color:var(--accent); min-width:24px; font-weight:500; }
+.stack-name { font-weight:500; min-width:200px; }
+.stack-desc { color:#B8B4AA; }
+.sep { text-align:center; color:var(--muted); letter-spacing:3px; margin:2rem 0; font-size:11px; }
+table { width:100%; border-collapse:collapse; font-size:12px; margin:0.8rem 0; }
+th { text-align:left; padding:5px 8px; border-bottom:0.5px solid var(--accent); color:var(--accent); font-size:10px; font-weight:500; letter-spacing:0.5px; font-family:'IBM Plex Mono',monospace; }
+td { padding:5px 8px; border-bottom:0.5px solid var(--border); color:#B8B4AA; }
+tr:last-child td { border-bottom:none; }
+.ok { color:var(--new); font-weight:500; }
+.footer { margin-top:4rem; padding-top:2rem; border-top:0.5px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); line-height:2; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>ZeroMail Protocol (ZMP/1.0)</h1>
+<div class="meta">
+<strong>Version</strong> 0.9 — Draft Fondateur Complet<br>
+<strong>Date</strong> March 2026 — Paris<br>
+<strong>Author</strong> Hiram, ZeroMail Initiative<br>
+<strong>Status</strong> Pre-Standards Track — Confidential<br>
+<strong>Adressage</strong> nom@domaine (ex: moise@travelagentix, offers@airfrance)<br>
+<strong>Supersedes</strong> ZMP/0.1 → ZMP/0.8
+</div>
+
+<div class="sep">· · ·</div>
+
+<h2>§1 — Cryptographic Stack — 7 Layers</h2>
+<div class="stack-row"><span class="stack-n">C1</span><span class="stack-name">AES-256-GCM + Diffie-Hellman</span><span class="stack-desc">Computational security 2^256. Standard NIST. Clé jamais transmise.</span></div>
+<div class="stack-row"><span class="stack-n">C2</span><span class="stack-name">LKE — Linguistic Key Exchange</span><span class="stack-desc">12 langues. PoW + shared_secret. Padding NULL. Rule diversité. Deniability sémantique.</span></div>
+<div class="stack-row"><span class="stack-n">C3</span><span class="stack-name">Micro-chiffrement positionnel</span><span class="stack-desc">AES-128-CTR. Clé unique par token par position. Script-native output.</span></div>
+<div class="stack-row"><span class="stack-n">C4</span><span class="stack-name">GML — Gématria Multi-System Layer</span><span class="stack-desc">6 ancient systems (HE/GR/AR/SA/JA/ET). 6 modes. AtBash. Phonétique croisée. Table normative SBL+ISO+Beta+IAST.</span></div>
+<div class="stack-row"><span class="stack-n">C5</span><span class="stack-name">SIGMA-222 — Merkavah רכב</span><span class="stack-desc">Condensat sémantique total. NP-difficile. Checksum. Récursif. 222 = רכב = Merkavah.</span></div>
+<div class="stack-row"><span class="stack-n">C6</span><span class="stack-name">GKL + NPE — Nine-Path Encoding</span><span class="stack-desc">N×0.9 → GKL_étendue(a·b) → 1 symbole cunéiforme ZMP-81. Preuve par neuf universelle. אמת=9.</span></div>
+<div class="stack-row"><span class="stack-n">C7</span><span class="stack-name">NLP — Numeric Linguistic Protocol</span><span class="stack-desc">Chiffres 0-9 → noms canoniques multilingues → SIGMA-222. Non-déterministe par session.</span></div>
+
+<div class="sep">· · ·</div>
+
+<h2>§2 — 6 GML Systems</h2>
+<table>
+<tr><th>Système</th><th>Name</th><th>Values</th><th>Reference</th></tr>
+<tr><td>HE</td><td>Gématria Hébraïque</td><td>1 → 900</td><td>Mispar Hechrachi</td></tr>
+<tr><td>GR</td><td>Isopséphie Grecque</td><td>1 → 900</td><td>Beta Code Standard (TLG)</td></tr>
+<tr><td>AR</td><td>Abjad Arabe</td><td>1 → 1000</td><td>ISO 233-3:1999</td></tr>
+<tr><td>SA</td><td>Katapayadi Sanskrit</td><td>1 → 9</td><td>IAST Standard</td></tr>
+<tr><td>JA</td><td>Iroha Japonais</td><td>1 → 47</td><td>Iroha classical order</td></tr>
+<tr><td>ET</td><td>Ge'ez Éthiopien</td><td>1 → 90</td><td>Ethiopic numerals</td></tr>
+</table>
+
+<h3>6 GML Modes</h3>
+<table>
+<tr><th>Mode</th><th>Name</th><th>Description</th></tr>
+<tr><td>0</td><td>Standard</td><td>Direct value in the assigned system</td></tr>
+<tr><td>1</td><td>AtBash</td><td>Mirror substitution (Hebrew, Greek, Arabic)</td></tr>
+<tr><td>2</td><td>Phonétique simple</td><td>Sum of letter values in the phonetic name</td></tr>
+<tr><td>3</td><td>Phonétique AtBash</td><td>AtBash applied after phonetic decomposition</td></tr>
+<tr><td>4</td><td>Phonétique croisée</td><td>Writing language ≠ pronunciation language</td></tr>
+<tr><td>5</td><td>Récursif</td><td>Value re-encoded in a different system</td></tr>
+</table>
+
+<div class="sep">· · ·</div>
+
+<h2>§3 — SIGMA-222 and NPE</h2>
+<p>SIGMA-222(T) = V0 + V1 + V2 + V3 + V4 + V5 — somme des 6 modes sur le token T.</p>
+<p>NPE : x = SIGMA-222(T) × 0.9 → GKL_étendue(x) = (a, b) → symbole ZMP-81[(a,b)]</p>
+<p>Propriété universelle : GKL(a+b) = 9 pour tout entier N. Preuve par neuf intégrée. אמת = א(1)+מ(40)+ת(400) = 441 → GKL(441) = 9.</p>
+
+<div class="code">HELLO WORLD → ZMP-Cipher v0.9 → 𒀈𒀬𒀑𒀵𒁐𒀈𒀬𒀑𒀵𒁐𒁐
+HIRAM       → ZMP-Cipher v0.9 → 𒀈𒀬𒀑𒀵𒁐
+
+Vérification proof by nine :
+𒀈 → 1·8 → 1+8=9 ✓
+𒀬 → 5·4 → 5+4=9 ✓
+𒀑 → 2·7 → 2+7=9 ✓
+𒀵 → 6·3 → 6+3=9 ✓
+𒁐 → 9·0 → 9+0=9 ✓</div>
+
+<div class="sep">· · ·</div>
+
+<h2>§4 — Transport — 3 Modes</h2>
+<table>
+<tr><th>Mode</th><th>Name</th><th>Usage</th><th>Latence</th><th>Émetteurs simultanés</th></tr>
+<tr><td>A</td><td>Git-ZMP bilatéral</td><td>Dev, test, faible volume</td><td>1–30s</td><td>1</td></tr>
+<tr><td>B</td><td>Fork-ZMP</td><td>Production légère</td><td>1–3s</td><td>N (un fork par émetteur)</td></tr>
+<tr><td>C</td><td>ZMP Gateway</td><td>Production lourde</td><td>&lt;500ms</td><td>Illimité</td></tr>
+</table>
+
+<h3>Fork-ZMP Protocol — Canonical structure</h3>
+<div class="code">fork zmp-{destinataire}-{emetteur}/
+├── inbox/
+│   ├── from_{emetteur}/      ← sender writes here
+│   └── from_{destinataire}/  ← recipient responds here
+├── handshake/
+│   ├── emetteur_pubkey.pem
+│   └── destinataire_pubkey.pem
+└── .zmp-config</div>
+
+<div class="sep">· · ·</div>
+
+<h2>§5 — ZMP Payment Protocol (ZPP)</h2>
+<table>
+<tr><th>Mode</th><th>Name</th><th>Description</th></tr>
+<tr><td>ZPP-A</td><td>Out-of-band</td><td>Stripe/PayPal webhook — simple, opérationnel maintenant</td></tr>
+<tr><td>ZPP-B</td><td>Contract-triggered</td><td>Contrat ZMP signé Ed25519 → déclenche paiement auto</td></tr>
+<tr><td>ZPP-C</td><td>On-chain native</td><td>Stablecoin EURC — wallet dans l'identité ZMP</td></tr>
+</table>
+
+<div class="sep">· · ·</div>
+
+<h2>§6 — 12 Novelty Claims — Priority Date : March 2026</h2>
+
+<div class="claim"><div class="claim-num">CLAIM 1 — ZMP</div>ZeroMail Protocol — Premier protocole de communication conçu nativement pour des agents IA comme destinataires primaires.</div>
+<div class="claim"><div class="claim-num">CLAIM 2 — LKE</div>Linguistic Key Exchange — Premier protocole cryptographique produisant un ciphertext indiscernable de texte naturel multilingue.</div>
+<div class="claim"><div class="claim-num">CLAIM 3 — GML</div>Gématria Multi-System Layer — Première utilisation formalisée de systèmes millénaires (HE/GR/AR/SA/JA/ET) comme couche cryptographique. 6 systèmes × 6 modes.</div>
+<div class="claim"><div class="claim-num">CLAIM 4 — SIGMA-222</div>Condensat sémantique total. NP-difficile. Checksum intégré. Récursif. 222 = רכב = Merkavah.</div>
+<div class="claim"><div class="claim-num">CLAIM 5 — DISSOCIATION</div>Langue d'écriture (LKE) et langue de prononciation (GML) cryptographiquement indépendantes.</div>
+<div class="claim"><div class="claim-num">CLAIM 6 — GKL</div>Gématria Ketana Layer — Compression cryptographique via réduction digitale kabbalistique. Canal Compact ratio ×0.9. אמת=9.</div>
+<div class="claim"><div class="claim-num">CLAIM 7 — NLP</div>Numeric Linguistic Protocol — Encodage cryptographique des valeurs numériques via noms canoniques multilingues.</div>
+<div class="claim"><div class="claim-num">CLAIM 8 — ZMP-PR</div>ZMP Prompt Registry — Watermarking cryptographique de prompts IA via empreinte SIGMA-222.</div>
+<div class="claim"><div class="claim-num">CLAIM 9 — GUI</div>GKL Universal Integrity — Propriété universelle : GKL_étendue(N×0.9) = 9 pour tout entier N. Public integrity without key.</div>
+<div class="claim"><div class="claim-num">CLAIM 10 — NPE</div>Nine-Path Encoding — 1 token → 1 symbole cunéiforme ZMP-81. Preuve par neuf native. ZMP-81 Alphabet (U+12000+).</div>
+<div class="claim"><div class="claim-num">CLAIM 11 — FORK-ZMP</div>Fork-ZMP Protocol — Exclusive bilateral Git channel per pair émetteur/destinataire. Résout la concurrence multi-émetteurs sans infrastructure.</div>
+<div class="claim"><div class="claim-num">CLAIM 12 — ZPP</div>ZMP Payment Protocol — Payment triggered by double Ed25519 signature dans un fork Git.</div>
+
+<div class="sep">· · ·</div>
+
+<h2>§7 — ZMP Addressing</h2>
+<div class="code">Format : nom@domaine
+
+moise@travelagentix      ← general travel agent
+myriam@travelagentix     ← VFR Africa diaspora agent
+offers@airfrance         ← Air France offers recipient
+salomon@noctia           ← economic intelligence agent
+audit@fiscalready        ← fiscal agent
+scoring@scorent          ← real estate scoring agent</div>
+
+<div class="sep">· · ·</div>
+
+<h2>§8 — Security — 7 Rules</h2>
+<table>
+<tr><th>Rule</th><th>Description</th></tr>
+<tr><td>SEC-01</td><td>Ed25519 obligatoire — messages non signés rejetés</td></tr>
+<tr><td>SEC-02</td><td>APP Sovereignty — client-side encrypted preference profile</td></tr>
+<tr><td>SEC-03</td><td>Differential privacy ε≤0.1 on analytics</td></tr>
+<tr><td>SEC-04</td><td>Mandatory economic stake for senders (500€+)</td></tr>
+<tr><td>SEC-05</td><td>RGPD — APP = personal data Art. 4</td></tr>
+<tr><td>SEC-06</td><td>Schema strict anti-injection — string fields never interpreted as instructions</td></tr>
+<tr><td>SEC-07</td><td>Certificate Transparency — Ed25519 keys publicly logged</td></tr>
+</table>
+
+<div class="footer">
+ZeroMail Protocol (ZMP/1.0) — Working Draft v0.9 — March 2026<br>
+Author : Hiram, ZeroMail Initiative — Paris<br>
+12 Novelty Claims — Priority date : March 2026<br>
+Adressage : nom@domaine (moise@travelagentix, offers@airfrance)<br>
+SILENCE — Le Manifesto ZeroMail — March 2026<br>
+Le protocole ZMP appartient à tout le monde. ZMP-Cipher belongs to its inventor.<br>
+רכב · SIGMA-222 · 222 · Merkavah · אמת · חי×10 · Preuve par Neuf
+</div>
+
+</div>
+</body>
+</html>
