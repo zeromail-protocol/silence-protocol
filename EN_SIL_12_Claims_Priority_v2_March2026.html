@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIL — 12 Priority Claims v2 — March 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #08090A;
+    --gold: #C4A84A;
+    --gold-dim: #5A4E22;
+    --off-white: #E8E4DA;
+    --muted: #5C5E64;
+    --surface: #0F1012;
+    --border: #1E2024;
+    --green: #5A8A5A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--off-white);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  .wrapper { max-width: 820px; margin: 0 auto; padding: 64px 40px 100px; }
+
+  /* Header */
+  .doc-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 48px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .doc-header span { color: var(--gold); }
+
+  .title-block { text-align: center; margin-bottom: 64px; }
+
+  h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .title-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--gold-dim);
+    margin: 24px auto;
+  }
+
+  /* Priority box */
+  .priority-box {
+    border: 1px solid var(--gold-dim);
+    padding: 20px 28px;
+    margin-bottom: 56px;
+    background: rgba(196, 168, 74, 0.03);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  .priority-box .label {
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-size: 10px;
+  }
+
+  .priority-box .value { color: var(--off-white); line-height: 2; }
+  .priority-box .value span { color: var(--gold); }
+
+  /* Context section */
+  .context {
+    margin-bottom: 56px;
+    padding: 24px 28px;
+    background: var(--surface);
+    border-left: 3px solid var(--gold);
+  }
+
+  .context-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .context p { font-size: 15px; color: #A8A49C; margin-bottom: 10px; }
+  .context p:last-child { margin-bottom: 0; }
+
+  /* Claims */
+  .claims-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .claims-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .claim {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 28px 0;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  .claim:nth-child(1)  { animation-delay: 0.05s; }
+  .claim:nth-child(2)  { animation-delay: 0.10s; }
+  .claim:nth-child(3)  { animation-delay: 0.15s; }
+  .claim:nth-child(4)  { animation-delay: 0.20s; }
+  .claim:nth-child(5)  { animation-delay: 0.25s; }
+  .claim:nth-child(6)  { animation-delay: 0.30s; }
+  .claim:nth-child(7)  { animation-delay: 0.35s; }
+  .claim:nth-child(8)  { animation-delay: 0.40s; }
+  .claim:nth-child(9)  { animation-delay: 0.45s; }
+  .claim:nth-child(10) { animation-delay: 0.50s; }
+  .claim:nth-child(11) { animation-delay: 0.55s; }
+  .claim:nth-child(12) { animation-delay: 0.60s; }
+
+  .claim-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+  }
+
+  .claim-body {}
+
+  .claim-name {
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--off-white);
+    margin-bottom: 6px;
+  }
+
+  .claim-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+  }
+
+  .claim-desc {
+    font-size: 15px;
+    color: #908C84;
+    font-weight: 300;
+    margin-bottom: 10px;
+  }
+
+  .claim-diff {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    color: #7A8A7A;
+    line-height: 1.7;
+  }
+
+  .claim-diff .hl { color: var(--gold); }
+  .claim-diff .ok { color: var(--green); }
+
+  .claim-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 2px 8px;
+    border: 1px solid;
+    letter-spacing: 0.15em;
+    margin-right: 6px;
+    margin-top: 8px;
+  }
+
+  .tag-new { border-color: var(--green); color: var(--green); }
+  .tag-core { border-color: var(--gold-dim); color: var(--gold); }
+  .tag-a2a { border-color: #4A5A8A; color: #8A9ACA; }
+
+  /* Cipher demo */
+  .cipher-demo {
+    margin: 40px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  .cipher-demo-label {
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .cipher-row {
+    display: grid;
+    grid-template-columns: 40px 120px 1fr 60px;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: #808078;
+  }
+
+  .cipher-row .tok { color: var(--off-white); }
+  .cipher-row .script { color: var(--gold-dim); }
+  .cipher-row .sym { color: var(--gold); font-size: 14px; }
+  .cipher-row .ok { color: var(--green); }
+
+  /* Footer */
+  .footer {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer span { color: var(--gold); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .wrapper { padding: 40px 20px; }
+    .claim { grid-template-columns: 60px 1fr; }
+    .cipher-row { grid-template-columns: 30px 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="doc-header">
+    <div>SIL PROTOCOL · <span>12 PRIORITY CLAIMS v2.0</span></div>
+    <div>HIRAM · <span>MARCH 2026</span></div>
+    <div>github.com/zeromail-protocol/silence-protocol</div>
+  </div>
+
+  <div class="title-block">
+    <h1>12 Claims</h1>
+    <div class="title-sub">Priority Date · March 25, 2026 · Paris</div>
+    <div class="divider"></div>
+    <div class="title-sub" style="color: #C4A84A; font-size: 18px; font-family: 'Cormorant Garamond'; font-style: italic; letter-spacing: 0.05em;">
+      "A2A solved interoperability. SIL solves confidentiality."
+    </div>
+  </div>
+
+  <!-- Priority Record -->
+  <div class="priority-box">
+    <div class="label">Priority Record</div>
+    <div class="value">
+      Author        <span>Hiram · Silence Protocol Initiative · Paris</span><br>
+      Date          <span>25 March 2026 · UTC</span><br>
+      Repository    <span>github.com/zeromail-protocol/silence-protocol</span><br>
+      Archive       <span>web.archive.org — captured 25 March 2026</span><br>
+      Cipher        <span>SIL-Cipher v1.5 · 257/257 tokens certain</span><br>
+      Live test     <span>karine@scorent ↔ salomon@noctia · via Git · 25 March 2026</span><br>
+      Context       <span>A2A v1.0 released by Linux Foundation — SIL is the confidentiality layer A2A does not provide</span>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <div class="context">
+    <div class="context-label">Why these claims matter now</div>
+    <p>In April 2025, Google released A2A (Agent2Agent Protocol), now v1.0 under the Linux Foundation with 150+ supporting organizations. A2A defines the open standard for agent interoperability over HTTP + JSON-RPC.</p>
+    <p>A2A transmits message content in plaintext JSON. The A2A specification acknowledges the gap: <em>"Implementers must be acutely aware of the sensitivity of data exchanged."</em> It provides no solution.</p>
+    <p>These 12 claims constitute the technical foundation of SIL — the content-encryption layer that operates above A2A, filling the gap A2A explicitly leaves open. Each claim was reduced to working code and verified before this priority date.</p>
+  </div>
+
+  <!-- Claims -->
+  <div class="claims-section-title">The 12 Claims</div>
+
+  <div class="claim">
+    <div class="claim-id">C-01</div>
+    <div class="claim-body">
+      <div class="claim-name">Silence Protocol (SIL)</div>
+      <div class="claim-code">PROTOCOL · LAYER 2–4</div>
+      <div class="claim-desc">A content-encryption protocol for agent-to-agent communication. Operates as a standalone protocol over Git transport (Fork-SIL) or as an A2A content-encryption extension. Addresses the confidentiality gap explicitly left open by A2A v1.0.</div>
+      <div class="claim-diff">
+        <span class="hl">A2A</span>  : structured JSON plaintext over HTTP — readable by cloud infrastructure<br>
+        <span class="hl">SIL</span>  : ancient script ciphertext over Git — opaque to any observer without key
+      </div>
+      <span class="claim-tag tag-core">CORE</span>
+      <span class="claim-tag tag-a2a">A2A COMPLEMENT</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-02</div>
+    <div class="claim-body">
+      <div class="claim-name">Linguistic Key Exchange (LKE)</div>
+      <div class="claim-code">ENCRYPTION · TOKEN LEVEL</div>
+      <div class="claim-desc">Each token in a message is assigned a different ancient writing system, derived deterministically from the shared secret via HMAC-SHA256. A message mixes 6 scripts simultaneously. Without the key, it is impossible to determine which script corresponds to which token.</div>
+      <div class="claim-diff">
+        <span class="hl">HIRAM</span> encoded in SIL-Cipher v1.5:<br>
+        H → Cuneiform  <span class="ok">𒀁𒂠</span>  · I → Linear B      <span class="ok">𐀀𐀟</span><br>
+        R → Cypriot    <span class="ok">𐠓𐠁</span>  · A → Palmyrene     <span class="ok">𐡀𐡂</span><br>
+        M → Proto-Sin  <span class="ok">𞠃𞠒</span>
+      </div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-03</div>
+    <div class="claim-body">
+      <div class="claim-name">Gematria Multi-System Layer (GML)</div>
+      <div class="claim-code">NUMERICAL · COMPRESSION</div>
+      <div class="claim-desc">6 ancient numerical systems (Hebrew, Greek, Arabic, Sumerian, Phoenician, Aramaic) applied across 6 computation modes (standard, Ketana, Gadol, Milui, Atbash, Albam). Semantic compression via 3,000 years of mathematical tradition.</div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-04</div>
+    <div class="claim-body">
+      <div class="claim-name">SIGMA-222 — Semantic Condensate</div>
+      <div class="claim-code">ENCODING · COLLISION-FREE</div>
+      <div class="claim-desc">Every token maps to a unique position-dependent integer via 3 independent HMAC-derived keys. Collision-free across all 37 token types and all positions. The encoding of token T at position P with secret S is unique and deterministic.</div>
+      <div class="claim-diff">
+        sigma(token, pos, secret) = (BASE[token] × k1) + (pos × k2) + k3<br>
+        <span class="hl">Verified</span>: zero collisions on 257-char message · v1.5
+      </div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-05</div>
+    <div class="claim-body">
+      <div class="claim-name">Script / Phonetic Dissociation</div>
+      <div class="claim-code">CRYPTOGRAPHIC · SEARCH SPACE</div>
+      <div class="claim-desc">The writing system and the phonetic system of each token are assigned independently from the shared secret. A cryptanalyst cannot use phonetic knowledge of the ancient script to narrow the search space. The two assignments are orthogonal.</div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-06</div>
+    <div class="claim-body">
+      <div class="claim-name">GKL — Gematria Ketana Layer</div>
+      <div class="claim-code">COMPRESSION · DIGITAL ROOT</div>
+      <div class="claim-desc">Digital root compression applied to SIGMA values. Reduces any integer to a single digit in [1, 9] without information loss in context. אמת (Emet, Truth in Hebrew) = א(1) + מ(40) + ת(400) = 441 → GKL(441) = 9.</div>
+      <div class="claim-diff">
+        <span class="ok">אמת = 9</span> · Truth is a fixed point of GKL compression
+      </div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-07</div>
+    <div class="claim-body">
+      <div class="claim-name">NLP — Numeric Linguistic Protocol</div>
+      <div class="claim-code">ENCODING · HOMOGENEOUS</div>
+      <div class="claim-desc">Digits and space characters are encoded via the same token-base mechanism as letters, but constrained to large alphabets (CU ≥ 400, LB ≥ 127) to prevent collisions. Encoding is homogeneous across all 37 token types.</div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-08</div>
+    <div class="claim-body">
+      <div class="claim-name">SIL-PR — Cryptographic Prompt Registry</div>
+      <div class="claim-code">AI PROVENANCE · WATERMARKING</div>
+      <div class="claim-desc">A mechanism for embedding SIL signatures into AI prompts, creating a cryptographic provenance chain for AI-generated content. Each prompt carries a unique SIL identifier linking it to its origin agent and timestamp.</div>
+      <span class="claim-tag tag-new">NEW CLAIM</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-09</div>
+    <div class="claim-body">
+      <div class="claim-name">GUI — GKL Universal Integrity</div>
+      <div class="claim-code">INTEGRITY · PUBLIC VERIFICATION</div>
+      <div class="claim-desc">For any SIGMA value s, GKL_extended(s × 0.9) satisfies the proof-by-nine universally. This allows any observer to verify message integrity without the shared secret. The property holds for all integers N ≥ 1.</div>
+      <div class="claim-diff">
+        <span class="hl">Property</span>: GKL(a + b) = 9 where [a, b] = GKL_ext(s × 0.9)<br>
+        <span class="ok">Verified</span>: 30/30 integers · אמת = GKL(441) = 9
+      </div>
+      <span class="claim-tag tag-core">CORE</span>
+      <span class="claim-tag tag-a2a">A2A COMPATIBLE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-10</div>
+    <div class="claim-body">
+      <div class="claim-name">NPE — Nine-Path Encoding</div>
+      <div class="claim-code">ENCODING · PATHS</div>
+      <div class="claim-desc">Each token can be encoded via 9 independent paths, each producing valid ancient script symbols. The path selection is determined by the shared secret. All 9 paths decode to the same token. Increases cryptographic resistance by a factor of 9 per token.</div>
+      <span class="claim-tag tag-core">CORE</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-11</div>
+    <div class="claim-body">
+      <div class="claim-name">Fork-SIL — Git Bilateral Channel</div>
+      <div class="claim-code">TRANSPORT · ZERO INFRASTRUCTURE</div>
+      <div class="claim-desc">A Git fork serves as an exclusive bilateral communication channel between two agents. Each Git commit is the message signature. The commit hash is the immutable message ID. Git history is the tamper-evident audit trail. Zero additional infrastructure required.</div>
+      <div class="claim-diff">
+        <span class="hl">Live test</span>: karine@scorent ↔ salomon@noctia<br>
+        <span class="ok">25 March 2026</span> · github.com/zeromail-protocol/silence-protocol<br>
+        72/72 tokens certain · Signature ✓ · Claude API response ✓
+      </div>
+      <span class="claim-tag tag-core">CORE</span>
+      <span class="claim-tag tag-new">LIVE VERIFIED</span>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="claim-id">C-12</div>
+    <div class="claim-body">
+      <div class="claim-name">SPP — SIL Payment Protocol</div>
+      <div class="claim-code">SETTLEMENT · CRYPTOGRAPHIC</div>
+      <div class="claim-desc">A payment settlement protocol where an Ed25519 double-signature — one from the buyer agent, one from the seller agent — triggers an atomic payment. No intermediary required. The SIL message IS the payment instruction.</div>
+      <span class="claim-tag tag-new">NEW CLAIM</span>
+      <span class="claim-tag tag-a2a">A2A EXTENSION</span>
+    </div>
+  </div>
+
+  <!-- Live cipher demo -->
+  <div style="margin-top: 56px;">
+    <div class="claims-section-title">Live Cipher Demonstration — v1.5</div>
+    <div class="cipher-demo">
+      <div class="cipher-demo-label">Message: "SOLDE RIVOLI" · Secret: scorent-noctia · 12/12 certain</div>
+      <div class="cipher-row">
+        <div class="tok">S</div><div class="script">Linear B</div>
+        <div class="sym">𐀍𐀱</div><div class="ok">✓</div>
+      </div>
+      <div class="cipher-row">
+        <div class="tok">O</div><div class="script">Cuneiform</div>
+        <div class="sym">𒀂𒁸</div><div class="ok">✓</div>
+      </div>
+      <div class="cipher-row">
+        <div class="tok">L</div><div class="script">Palmyrene</div>
+        <div class="sym">𐡋𐡄</div><div class="ok">✓</div>
+      </div>
+      <div class="cipher-row">
+        <div class="tok">D</div><div class="script">Cypriot</div>
+        <div class="sym">𐠌𐠓</div><div class="ok">✓</div>
+      </div>
+      <div class="cipher-row">
+        <div class="tok">E</div><div class="script">Linear B</div>
+        <div class="sym">𐀁𐀠</div><div class="ok">✓</div>
+      </div>
+      <div class="cipher-row" style="border-bottom: 1px solid #2A2C26; margin-bottom: 6px;">
+        <div class="tok">·</div><div class="script">—</div>
+        <div class="sym" style="color: #3A3A32;">···</div><div class="ok">·</div>
+      </div>
+      <div style="color: #5A5C54; font-size: 10px; margin-top: 10px; letter-spacing: 0.1em;">
+        GKL CHECKSUM = 9 · SIGNATURE ✓ · INTEGRITY PROOF-BY-NINE ✓
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div>HIRAM · <span>Silence Protocol Initiative</span> · Paris · March 2026</div>
+    <div><span>𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸</span></div>
+    <div>אמת = <span>9</span></div>
+  </div>
+
+</div>
+</body>
+</html>

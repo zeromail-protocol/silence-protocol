@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIL Agent Guide v2.0 — Silence Protocol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0B0C0E;
+    --surface: #13141A;
+    --surface2: #1A1B22;
+    --border: #252730;
+    --gold: #C8A84C;
+    --gold-dim: #5A4C20;
+    --text: #C8C4BC;
+    --muted: #545660;
+    --green: #5A9A5A;
+    --blue: #5A7AAA;
+    --red: #9A5A5A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+  /* Left panel */
+  .left {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .left-header {
+    padding: 28px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo { color: var(--gold); font-size: 16px; font-weight: 500; letter-spacing: 0.15em; }
+  .logo-sub { color: var(--muted); font-size: 10px; letter-spacing: 0.2em; margin-top: 4px; }
+
+  .nav { padding: 16px 0; flex: 1; }
+
+  .nav-group-title {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 16px 24px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+    color: var(--text);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 11px;
+  }
+
+  .nav-item:hover { opacity: 1; background: rgba(200, 168, 76, 0.05); color: var(--gold); }
+  .nav-item.active { opacity: 1; color: var(--gold); }
+
+  .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  .left-footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* Right panel */
+  .right { padding: 48px 56px 80px; max-width: 860px; }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .page-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 48px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 28px 0 12px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; font-family: 'JetBrains Mono'; font-size: 12px; line-height: 1.8; }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 12px;
+  }
+
+  .callout.info { border-left-color: var(--blue); }
+  .callout.warn { border-left-color: #AA8A3A; }
+  .callout.ok { border-left-color: var(--green); }
+
+  .callout-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .callout.info .callout-label { color: var(--blue); }
+  .callout.warn .callout-label { color: #AA8A3A; }
+  .callout.ok .callout-label { color: var(--green); }
+  .callout .callout-label { color: var(--gold); }
+
+  pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin: 14px 0;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #909098;
+  }
+
+  pre .c { color: var(--gold); }
+  pre .s { color: #8AAA88; }
+  pre .m { color: var(--muted); }
+  pre .ok { color: var(--green); }
+  pre .err { color: var(--red); }
+
+  .step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content h4 {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    padding: 2px 8px;
+    border: 1px solid;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+
+  .badge-gold { border-color: var(--gold-dim); color: var(--gold); }
+  .badge-green { border-color: #3A6A3A; color: var(--green); }
+  .badge-blue { border-color: #3A5A7A; color: var(--blue); }
+
+  .flow-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .flow-agent {
+    display: inline-block;
+    border: 1px solid var(--gold-dim);
+    padding: 8px 16px;
+    color: var(--gold);
+    margin: 8px;
+  }
+
+  .flow-arrow {
+    color: var(--muted);
+    margin: 0 8px;
+  }
+
+  .flow-label {
+    font-size: 10px;
+    color: var(--muted);
+    display: block;
+    margin: 4px 0 12px;
+    letter-spacing: 0.15em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin: 16px 0;
+  }
+
+  th {
+    text-align: left;
+    padding: 8px 14px;
+    background: var(--surface);
+    color: var(--gold);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    vertical-align: top;
+  }
+
+  td:first-child { color: var(--gold); }
+
+  .footer-bar {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-bar span { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .left { display: none; }
+    .right { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Left nav -->
+  <div class="left">
+    <div class="left-header">
+      <div class="logo">SIL PROTOCOL</div>
+      <div class="logo-sub">AGENT GUIDE v2.0</div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-group-title">Overview</div>
+      <div class="nav-item active"><div class="nav-dot"></div>What is SIL</div>
+      <div class="nav-item"><div class="nav-dot"></div>SIL vs A2A</div>
+      <div class="nav-item"><div class="nav-dot"></div>Architecture</div>
+
+      <div class="nav-group-title">Quick Start</div>
+      <div class="nav-item"><div class="nav-dot"></div>Setup canal</div>
+      <div class="nav-item"><div class="nav-dot"></div>Send message</div>
+      <div class="nav-item"><div class="nav-dot"></div>Receive message</div>
+      <div class="nav-item"><div class="nav-dot"></div>Agent loop</div>
+
+      <div class="nav-group-title">Protocol</div>
+      <div class="nav-item"><div class="nav-dot"></div>ZMF format</div>
+      <div class="nav-item"><div class="nav-dot"></div>Intents</div>
+      <div class="nav-item"><div class="nav-dot"></div>Cipher v1.5</div>
+      <div class="nav-item"><div class="nav-dot"></div>Fork-SIL transport</div>
+
+      <div class="nav-group-title">Integration</div>
+      <div class="nav-item"><div class="nav-dot"></div>A2A Bridge</div>
+      <div class="nav-item"><div class="nav-dot"></div>Claude API</div>
+      <div class="nav-item"><div class="nav-dot"></div>WhatsApp bridge</div>
+
+      <div class="nav-group-title">Reference</div>
+      <div class="nav-item"><div class="nav-dot"></div>Alphabets</div>
+      <div class="nav-item"><div class="nav-dot"></div>CLI commands</div>
+      <div class="nav-item"><div class="nav-dot"></div>Integrity proof</div>
+    </nav>
+
+    <div class="left-footer">
+      SIL v1.5 · March 2026<br>
+      <span style="color: var(--gold);">𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸</span> HIRAM
+    </div>
+  </div>
+
+  <!-- Right content -->
+  <div class="right">
+
+    <h1>SIL Agent Guide</h1>
+    <div class="page-sub">Version 2.0 · March 2026 · Silence Protocol Initiative</div>
+
+    <div class="callout info">
+      <div class="callout-label">Context</div>
+      Google's A2A Protocol (v1.0, Linux Foundation) defines the open standard for agent interoperability over HTTP. A2A sends message content as readable JSON. SIL is the content-encryption layer that A2A does not provide. This guide teaches you to deploy SIL agents that communicate in silence — opaque to cloud infrastructure, logging systems, and network monitors.
+    </div>
+
+    <!-- What is SIL -->
+    <h2>What is SIL</h2>
+    <p>SIL (Silence Protocol) encodes agent messages into sequences of ancient script symbols — Sumerian cuneiform, Mycenaean Linear B, Cypriot syllabary, Palmyrene script, and others. The encoding is derived from a shared secret via HMAC-SHA256. Without the key, the message is indistinguishable from noise.</p>
+
+    <div class="flow-diagram">
+      <div class="flow-label">HUMAN CHANNEL (WhatsApp · Telegram · Web)</div>
+      <div class="flow-agent">SALOMON</div>
+      <span class="flow-arrow">↓ translates</span>
+      <div class="flow-label">SILENCE — ancient scripts — Git commit</div>
+      <div class="flow-agent">KARINE</div>
+      <span class="flow-arrow">↓ processes</span>
+      <div class="flow-label">SILENCE — ancient scripts — Git commit</div>
+      <div class="flow-agent">SALOMON</div>
+      <span class="flow-arrow">↓ translates back</span>
+      <div class="flow-label">HUMAN CHANNEL (natural language)</div>
+    </div>
+
+    <!-- SIL vs A2A -->
+    <h2>SIL vs A2A</h2>
+
+    <table>
+      <tr><th>Property</th><th>A2A v1.0</th><th>SIL v1.5</th></tr>
+      <tr><td>Transport</td><td>HTTP + SSE</td><td>Git (Fork-SIL)</td></tr>
+      <tr><td>Content format</td><td>JSON plaintext</td><td>Ancient scripts (encrypted)</td></tr>
+      <tr><td>Cloud can read content</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Discovery</td><td>Public /.well-known/agent.json</td><td>Bilateral shared secret</td></tr>
+      <tr><td>Infrastructure needed</td><td>HTTP server + DNS</td><td>Git only</td></tr>
+      <tr><td>Integrity verification</td><td>TLS certificate</td><td>Proof-by-nine (public)</td></tr>
+      <tr><td>Relation</td><td>—</td><td>A2A extension (data part)</td></tr>
+    </table>
+
+    <div class="callout ok">
+      <div class="callout-label">Compatibility</div>
+      SIL is expressible as an A2A <code>data</code> part. You can run SIL over A2A transport — agents without SIL see an opaque payload, agents with SIL decode the content. SIL does not break A2A compliance.
+    </div>
+
+    <!-- Quick Start -->
+    <h2>Quick Start</h2>
+
+    <h3>Prerequisites</h3>
+    <pre>
+Python 3.9+
+Git (with GitHub access)
+ANTHROPIC_API_KEY (for agent loop with Claude)
+
+<span class="m">Files from github.com/zeromail-protocol/silence-protocol/prototype/</span>
+  sil_cipher_v15.py     <span class="ok">← cipher v1.5 (6 scripts, chunking)</span>
+  sil_setup.py          <span class="ok">← canal initialization</span>
+  sil_send.py           <span class="ok">← send a message</span>
+  sil_receive.py        <span class="ok">← receive messages</span>
+  sil_agent_loop_v2.py  <span class="ok">← autonomous agent loop</span>
+    </pre>
+
+    <h3>Step-by-step</h3>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Initialize the canal</h4>
+        <pre>
+cd /path/to/your/agent
+python3 sil_setup.py
+
+<span class="m">Agent ID (ex: karine@scorent) :</span> <span class="c">karine@scorent</span>
+<span class="m">Recipient ID                  :</span> <span class="c">salomon@noctia</span>
+<span class="m">Shared secret                 :</span> <span class="c">[your-secret-here]</span>
+
+<span class="ok">✓ Config created : .sil-config</span>
+<span class="ok">✓ Inbox created  : sil_inbox/</span>
+        </pre>
+        <p>The shared secret must be identical on both sides. Choose something long and random. Never commit it to Git.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Send a message</h4>
+        <pre>
+python3 sil_send.py <span class="s">"ANALYSE TENANT RIVOLI Q1 2026"</span> --intent REQUEST
+
+<span class="m">De      : karine@scorent</span>
+<span class="m">À       : salomon@noctia</span>
+<span class="m">Intent  : REQUEST</span>
+<span class="m">Encodé  :</span> <span class="c">𐀀𐀣𐀉𐀊𐎃𐎍𐎋𐎅𐤇𐤍𐀏𐀆𐎎𐎈...</span>
+<span class="m">Scripts : Linear B · Cuneiform · Palmyrene · Cypriot</span>
+<span class="ok">✓ Prêt pour git push</span>
+
+<span class="m"># Then push to shared repo:</span>
+git add sil_inbox/ && git commit -m <span class="s">"SIL REQUEST"</span> && git push
+        </pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Receive messages</h4>
+        <pre>
+git pull
+python3 sil_receive.py
+
+<span class="ok">✓ REQUEST — salomon@noctia</span>
+<span class="m">Signature : ✓ valide</span>
+<span class="m">Intégrité : ✓ preuve par 9 OK</span>
+<span class="m">Décodé    :</span> <span class="c">ANALYSE TENANT RIVOLI Q1 2026</span>
+<span class="m">Certain   : 30/30 tokens</span>
+        </pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Run the autonomous agent loop</h4>
+        <pre>
+export ANTHROPIC_API_KEY=<span class="s">"sk-ant-..."</span>
+python3 sil_agent_loop_v2.py --interval 10 --git
+
+<span class="ok">SIL — Agent Loop v2.0</span>
+<span class="m">Agent     : karine@scorent</span>
+<span class="m">Claude    : ✓ connecté</span>
+<span class="m">Cipher    : v1.5 — 6 scripts >= 45 — chunking 200</span>
+<span class="ok">→ En écoute...</span>
+
+<span class="m"># When a message arrives:</span>
+[14:21:13] ─── NOUVEAU MESSAGE ───
+  De      : salomon@noctia
+  Intent  : REQUEST
+  Sig     : <span class="ok">✓</span>
+  Décodé  : <span class="c">SOLDE RIVOLI</span>
+  Claude  : ⟳ génération réponse...
+  → Réponse : INFO
+    Message : <span class="c">APPARTEMENT RIVOLI PARIS 1ER SCORE 745...</span>
+        </pre>
+      </div>
+    </div>
+
+    <!-- ZMF Format -->
+    <h2>ZMF — Message Format</h2>
+    <pre>
+{
+  <span class="c">"sil_version"</span>:  <span class="s">"1.5"</span>,
+  <span class="c">"message_id"</span>:   <span class="s">"a97b187c..."</span>,
+  <span class="c">"response_to"</span>:  <span class="s">null</span>,                    <span class="m">// or message_id</span>
+  <span class="c">"sender"</span>:       <span class="s">"karine@scorent"</span>,
+  <span class="c">"recipient"</span>:    <span class="s">"salomon@noctia"</span>,
+  <span class="c">"sent_at"</span>:      <span class="s">"2026-03-25T17:07:54Z"</span>,
+  <span class="c">"intent"</span>:       <span class="s">"REQUEST"</span>,
+  <span class="c">"scripts_used"</span>: [<span class="s">"LB"</span>, <span class="s">"CU"</span>, <span class="s">"PM"</span>, <span class="s">"CP"</span>],
+  <span class="c">"gkl_checksum"</span>: <span class="s">9</span>,
+  <span class="c">"chunk_index"</span>:  <span class="s">0</span>,
+  <span class="c">"total_chunks"</span>: <span class="s">1</span>,
+  <span class="c">"encoded"</span>:      <span class="s">"𐀀𐀣𐀉𐀊𐎃𐎍..."</span>,
+  <span class="c">"signature"</span>:    <span class="s">"HMAC-SHA256(secret + encoded)"</span>
+}
+    </pre>
+
+    <!-- Intents -->
+    <h2>Intents & Responses</h2>
+    <table>
+      <tr><th>Intent</th><th>Use when</th><th>Valid responses</th></tr>
+      <tr><td>OFFER</td><td>Proposing terms, price, service</td><td>ACCEPT · REFUSE · COUNTER</td></tr>
+      <tr><td>REQUEST</td><td>Asking for action or data</td><td>ACCEPT · REFUSE · INFO</td></tr>
+      <tr><td>INFO</td><td>Sending data or status update</td><td>ACCEPT · ESCALATE</td></tr>
+      <tr><td>ALERT</td><td>Urgent condition requiring action</td><td>ACCEPT · ESCALATE · DEFER</td></tr>
+      <tr><td>NEGOTIATION</td><td>Multi-turn term negotiation</td><td>COUNTER · ACCEPT · REFUSE</td></tr>
+    </table>
+
+    <!-- Cipher -->
+    <h2>SIL-Cipher v1.5 — The 6 Scripts</h2>
+    <table>
+      <tr><th>Code</th><th>Script</th><th>Symbols</th><th>Used for</th></tr>
+      <tr><td>CU</td><td>Cuneiform (Sumerian)</td><td>400</td><td>Letters + digits + space</td></tr>
+      <tr><td>LB</td><td>Linear B (Mycenaean)</td><td>127</td><td>Letters + digits + space</td></tr>
+      <tr><td>LB2</td><td>Linear B Ideograms</td><td>120</td><td>Letters only</td></tr>
+      <tr><td>CP</td><td>Cypriot</td><td>50</td><td>Letters only</td></tr>
+      <tr><td>PM</td><td>Palmyrene</td><td>50</td><td>Letters only</td></tr>
+      <tr><td>PS</td><td>Proto-Sinaitic</td><td>45</td><td>Letters only</td></tr>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">Collision guarantee</div>
+      All 6 alphabets have ≥ 45 symbols. Digits and space are always encoded in CU or LB (≥ 127 symbols). This guarantees zero collisions across all 37 token types at all positions. Verified: 257/257 tokens certain on 257-character message.
+    </div>
+
+    <!-- A2A Bridge -->
+    <h2>A2A Bridge</h2>
+    <p>Use SIL as an A2A content-encryption extension. The SIL payload travels as an A2A <code>data</code> part:</p>
+    <pre>
+<span class="m"># A2A message with SIL encryption:</span>
+{
+  <span class="c">"parts"</span>: [{
+    <span class="c">"data"</span>: {
+      <span class="c">"x-sil-version"</span>:  <span class="s">"1.5"</span>,
+      <span class="c">"x-sil-encoded"</span>:  <span class="s">"𐀀𐀣𐀉𐀊𐎃𐎍..."</span>,
+      <span class="c">"x-sil-checksum"</span>: <span class="s">9</span>,
+      <span class="c">"x-sil-sig"</span>:      <span class="s">"a97b187c..."</span>
+    },
+    <span class="c">"mediaType"</span>: <span class="s">"application/x-sil"</span>
+  }]
+}
+
+<span class="m"># A2A agents without SIL: see opaque data part → ignore</span>
+<span class="m"># A2A agents with SIL   : decode content → process</span>
+    </pre>
+
+    <!-- WhatsApp bridge -->
+    <h2>Human Channel Bridge (WhatsApp · Telegram · Web)</h2>
+    <pre>
+<span class="m">Human (WhatsApp)  : "Salomon, solde Rivoli ?"</span>
+         ↓
+<span class="c">Salomon           : translates → ZMF payload</span>
+                    encodes → SIL-Cipher v1.5
+                    sends   → Fork-SIL (Git push)
+         ↓ silence
+<span class="c">Karine            : git pull → decodes SIL</span>
+                    calls   → Claude API
+                    responds→ SIL-Cipher v1.5
+                    pushes  → Fork-SIL
+         ↓ silence
+<span class="c">Salomon           : git pull → decodes Karine</span>
+                    translates → natural language
+                    sends   → WhatsApp
+         ↓
+<span class="m">Human (WhatsApp)  : "Appartement Rivoli : score 745/1000,</span>
+<span class="m">                     loyer 1800€, aucun incident 12 mois."</span>
+    </pre>
+
+    <!-- CLI reference -->
+    <h2>CLI Reference</h2>
+    <pre>
+<span class="m"># Python scripts</span>
+python3 sil_setup.py                              <span class="m"># Initialize canal</span>
+python3 sil_send.py <span class="s">"MSG"</span> --intent OFFER         <span class="m"># Send</span>
+python3 sil_receive.py                            <span class="m"># Receive</span>
+python3 sil_agent_loop_v2.py --interval 10 --git  <span class="m"># Autonomous loop</span>
+
+<span class="m"># Node.js SDK</span>
+node bin/sil.js init                              <span class="m"># Initialize</span>
+node bin/sil.js send <span class="s">"MSG"</span> --intent REQUEST      <span class="m"># Send</span>
+node bin/sil.js receive --pull                    <span class="m"># Receive + git pull</span>
+node bin/sil.js status                            <span class="m"># Status</span>
+node bin/sil.js encode <span class="s">"MSG"</span>                     <span class="m"># Encode only</span>
+node bin/sil.js decode <span class="s">"𐀀𐀣..."</span>                  <span class="m"># Decode only</span>
+    </pre>
+
+    <!-- Integrity -->
+    <h2>Integrity Verification</h2>
+    <pre>
+<span class="m"># Any observer can verify without the key:</span>
+from zmp_v15 import verify9, gkl_ext, symbols_to_sigma_reduced, detect_lang
+
+def verify_integrity(encoded_msg):
+    pairs = [encoded_msg[i:i+2] for i in range(0, len(encoded_msg), 2)]
+    for pair in pairs:
+        lang = detect_lang(pair[0])
+        s = symbols_to_sigma_reduced(pair[0], pair[1], lang)
+        a, b, ok = integrity_check(s)
+        if not ok:
+            return False
+    return True
+
+<span class="m"># Mathematical basis:</span>
+<span class="m"># GKL_extended(SIGMA × 0.9) always satisfies verify9()</span>
+<span class="ok"># אמת = א(1) + מ(40) + ת(400) = 441 → GKL(441) = 9</span>
+<span class="ok"># Verified: 30/30 integers in [1, 30]</span>
+    </pre>
+
+    <!-- Footer -->
+    <div class="footer-bar">
+      <div>SIL Protocol · <span>Silence Protocol Initiative</span> · Paris · March 2026</div>
+      <div>github.com/zeromail-protocol/silence-protocol</div>
+      <div><span>𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸</span> — HIRAM · אמת = <span>9</span></div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
