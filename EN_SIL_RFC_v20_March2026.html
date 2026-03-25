@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIL RFC v2.0 — Silence Protocol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;1,300&display=swap');
+
+  :root {
+    --bg: #0D0E0C;
+    --surface: #141510;
+    --border: #2A2C26;
+    --gold: #C4A84A;
+    --gold-dim: #6B5C28;
+    --text: #D4D0C8;
+    --muted: #5A5C54;
+    --green: #6A9A6A;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'IBM Plex Serif', Georgia, serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 32px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .sidebar-logo {
+    color: var(--gold);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-version {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+  }
+
+  .nav-section {
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin: 20px 0 8px;
+  }
+
+  .nav-item {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    padding: 5px 8px;
+    border-radius: 2px;
+    margin-bottom: 2px;
+    opacity: 0.7;
+    transition: all 0.15s;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: rgba(196, 168, 74, 0.08);
+    color: var(--gold);
+    opacity: 1;
+  }
+
+  /* Main */
+  .main {
+    padding: 48px 64px 80px;
+    max-width: 900px;
+  }
+
+  /* RFC Header */
+  .rfc-header {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .rfc-header span { color: var(--gold); }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .rfc-abstract {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 48px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  h2::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    margin: 24px 0 12px;
+    letter-spacing: 0.1em;
+  }
+
+  p { margin-bottom: 14px; color: var(--text); font-weight: 300; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    color: var(--gold);
+  }
+
+  pre {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin: 16px 0;
+    overflow-x: auto;
+    line-height: 1.8;
+    color: #A0A098;
+  }
+
+  pre .hl { color: var(--gold); }
+  pre .ok { color: var(--green); }
+  pre .cm { color: var(--muted); }
+  pre .str { color: #A8C8A0; }
+
+  .note {
+    border-left: 3px solid var(--gold);
+    padding: 12px 20px;
+    background: rgba(196, 168, 74, 0.04);
+    margin: 20px 0;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  .status-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 11px;
+    margin: 20px 0;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--surface);
+    color: var(--gold);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  td:first-child { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">SIL PROTOCOL</div>
+    <div class="sidebar-version">RFC v2.0 · March 2026</div>
+
+    <div class="nav-section">Overview</div>
+    <a class="nav-item active" href="#abstract">Abstract</a>
+    <a class="nav-item" href="#context">Context & A2A</a>
+    <a class="nav-item" href="#goals">Design Goals</a>
+
+    <div class="nav-section">Protocol</div>
+    <a class="nav-item" href="#architecture">Architecture</a>
+    <a class="nav-item" href="#zmf">ZMF Format</a>
+    <a class="nav-item" href="#cipher">SIL-Cipher v1.5</a>
+    <a class="nav-item" href="#transport">Fork-SIL Transport</a>
+    <a class="nav-item" href="#intents">Intents & Decisions</a>
+    <a class="nav-item" href="#integrity">Integrity</a>
+
+    <div class="nav-section">Integration</div>
+    <a class="nav-item" href="#a2a-bridge">A2A Bridge</a>
+    <a class="nav-item" href="#mcp">MCP Relation</a>
+
+    <div class="nav-section">Reference</div>
+    <a class="nav-item" href="#claims">12 Claims</a>
+    <a class="nav-item" href="#alphabets">Alphabets</a>
+    <a class="nav-item" href="#status">Status</a>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <div class="status-badge">DRAFT · NOT FOR PRODUCTION · PRIORITY DATE: 25 MARCH 2026</div>
+
+    <div class="rfc-header">
+      <div>Protocol: <span>Silence Protocol (SIL)</span></div>
+      <div>Version: <span>RFC v2.0</span></div>
+      <div>Author: <span>Hiram · Silence Protocol Initiative</span></div>
+      <div>Date: <span>25 March 2026</span></div>
+      <div>Relation: <span>A2A Extension / Complement</span></div>
+      <div>Repo: <span>github.com/zeromail-protocol/silence-protocol</span></div>
+    </div>
+
+    <h1>Silence Protocol (SIL)</h1>
+    <p class="rfc-abstract">SIL is a content-encryption layer for agent-to-agent communication. Where A2A solves interoperability between agents, SIL solves confidentiality of what agents say to each other. SIL encodes message content into a sequence of ancient script symbols derived from a shared secret via HMAC-SHA256. The encoded content is opaque to any observer without the secret, including cloud infrastructure, logging systems, and network intermediaries. SIL is designed to operate as an A2A extension, as a standalone protocol over Git transport, or as a hybrid.</p>
+
+    <!-- Context -->
+    <h2 id="context">Context & Relation to A2A</h2>
+    <p>The Agent2Agent (A2A) Protocol, released by Google in April 2025 and donated to the Linux Foundation in June 2025, defines the open standard for agent interoperability. A2A is well-designed and will become the dominant standard for enterprise agent communication.</p>
+    <p>A2A transmits messages as structured JSON over HTTP. The content is readable by any party with access to the transport layer — cloud providers, logging infrastructure, compliance systems, and network intermediaries. A2A's security model relies on TLS for transit encryption and OAuth2 for authentication. Neither protects the content of messages from the infrastructure that carries them.</p>
+    <p>The A2A specification acknowledges this: <em>"Implementers must be acutely aware of the sensitivity of data exchanged."</em> The specification does not provide a solution. SIL is that solution.</p>
+
+    <div class="note">SIL does not compete with A2A. SIL is the confidentiality layer that A2A does not provide and cannot provide, because the infrastructure that would provide it is the same infrastructure that needs to be protected against.</div>
+
+    <table>
+      <tr><th>Property</th><th>A2A</th><th>SIL</th></tr>
+      <tr><td>Transport</td><td>HTTP + SSE</td><td>Git commits (Fork-SIL)</td></tr>
+      <tr><td>Message format</td><td>JSON-RPC 2.0</td><td>ZMF + SIL-Cipher</td></tr>
+      <tr><td>Content</td><td>Plaintext (readable)</td><td>Ancient scripts (encrypted)</td></tr>
+      <tr><td>Discovery</td><td>Public Agent Card</td><td>Bilateral shared secret</td></tr>
+      <tr><td>Auth</td><td>OAuth2 / Bearer</td><td>HMAC-SHA256 signature</td></tr>
+      <tr><td>Integrity</td><td>TLS</td><td>Proof-by-nine + Ed25519</td></tr>
+      <tr><td>Infrastructure</td><td>HTTP server</td><td>Git only</td></tr>
+      <tr><td>Content visible to cloud</td><td>Yes</td><td>No</td></tr>
+    </table>
+
+    <!-- Goals -->
+    <h2 id="goals">Design Goals</h2>
+
+    <h3>G-01 · Content opacity</h3>
+    <p>The content of a SIL message must be indistinguishable from random noise to any observer without the shared secret. This includes cloud providers, logging systems, and network monitors.</p>
+
+    <h3>G-02 · Zero infrastructure dependency</h3>
+    <p>SIL must operate without any dedicated server infrastructure. Git is sufficient as transport. Two agents with a shared secret and Git access can communicate.</p>
+
+    <h3>G-03 · Public integrity verification</h3>
+    <p>Any observer must be able to verify that a SIL message has not been tampered with, without access to the shared secret. This is achieved via the universal proof-by-nine.</p>
+
+    <h3>G-04 · A2A compatibility</h3>
+    <p>SIL must be expressible as an A2A data part. An A2A agent without SIL sees an opaque payload. An A2A agent with SIL decodes the content. No A2A compliance is broken.</p>
+
+    <h3>G-05 · Deterministic encoding</h3>
+    <p>Given the same message, secret, and position, the encoding must always produce the same output. Two agents encoding independently must produce identical results.</p>
+
+    <!-- Architecture -->
+    <h2 id="architecture">Architecture</h2>
+
+    <pre>
+<span class="cm">┌─────────────────────────────────────────────────────────┐</span>
+<span class="cm">│                    SIL PROTOCOL STACK                   │</span>
+<span class="cm">├─────────────────────────────────────────────────────────┤</span>
+<span class="cm">│  LAYER 4  │</span> <span class="hl">APPLICATION</span>    <span class="cm">│ Agent business logic          │</span>
+<span class="cm">│  LAYER 3  │</span> <span class="hl">FORMAT (ZMF)</span>   <span class="cm">│ Intent · Payload · Header     │</span>
+<span class="cm">│  LAYER 2  │</span> <span class="hl">CIPHER (LKE)</span>   <span class="cm">│ 6 scripts · HMAC · Proof-by-9 │</span>
+<span class="cm">│  LAYER 1  │</span> <span class="hl">TRANSPORT</span>      <span class="cm">│ Fork-SIL (Git) · A2A (HTTP)   │</span>
+<span class="cm">└─────────────────────────────────────────────────────────┘</span>
+    </pre>
+
+    <!-- ZMF -->
+    <h2 id="zmf">ZMF — Zero Markup Format</h2>
+    <p>The SIL message format. Structured, minimal, machine-readable. No HTML. No subject lines. No emotional punctuation.</p>
+
+    <pre>
+{
+  <span class="hl">"sil_version"</span>:  <span class="str">"1.5"</span>,
+  <span class="hl">"message_id"</span>:   <span class="str">"a97b187c..."</span>,        <span class="cm">// SHA-256 derived</span>
+  <span class="hl">"response_to"</span>:  <span class="str">"null | message_id"</span>,
+  <span class="hl">"sender"</span>:       <span class="str">"karine@scorent"</span>,
+  <span class="hl">"recipient"</span>:    <span class="str">"salomon@noctia"</span>,
+  <span class="hl">"sent_at"</span>:      <span class="str">"2026-03-25T17:07:54Z"</span>,
+  <span class="hl">"intent"</span>:       <span class="str">"REQUEST"</span>,             <span class="cm">// See §Intents</span>
+  <span class="hl">"scripts_used"</span>: [<span class="str">"LB"</span>, <span class="str">"CU"</span>, <span class="str">"PM"</span>, <span class="str">"CP"</span>],
+  <span class="hl">"gkl_checksum"</span>: <span class="str">9</span>,
+  <span class="hl">"chunk_index"</span>:  <span class="str">0</span>,
+  <span class="hl">"total_chunks"</span>: <span class="str">1</span>,
+  <span class="hl">"encoded"</span>:      <span class="str">"𐀀𐀣𐀉𐀊𐎃𐎍𐎋𐎅..."</span>,
+  <span class="hl">"signature"</span>:    <span class="str">"HMAC-SHA256(secret + encoded)"</span>
+}
+    </pre>
+
+    <!-- Cipher -->
+    <h2 id="cipher">SIL-Cipher v1.5 — LKE</h2>
+
+    <h3>The 6 alphabets</h3>
+    <table>
+      <tr><th>Code</th><th>Script</th><th>Origin</th><th>Unicode</th><th>Symbols</th></tr>
+      <tr><td>CU</td><td>Cuneiform</td><td>Sumerian ~3400 BCE</td><td>U+12000</td><td>400</td></tr>
+      <tr><td>LB</td><td>Linear B</td><td>Mycenaean ~1500 BCE</td><td>U+10000</td><td>127</td></tr>
+      <tr><td>LB2</td><td>Linear B Ideograms</td><td>Mycenaean ~1500 BCE</td><td>U+10080</td><td>120</td></tr>
+      <tr><td>CP</td><td>Cypriot</td><td>Cyprus ~800 BCE</td><td>U+10800</td><td>50</td></tr>
+      <tr><td>PM</td><td>Palmyrene</td><td>Syria ~100 BCE</td><td>U+10880</td><td>50</td></tr>
+      <tr><td>PS</td><td>Proto-Sinaitic</td><td>Sinai ~1900 BCE</td><td>U+1E800</td><td>45</td></tr>
+    </table>
+
+    <p>All 6 alphabets have ≥ 45 symbols, guaranteeing collision-free encoding across all 37 token types (26 letters + 10 digits + space). Digits and space are always encoded in large alphabets (CU, LB) to eliminate collisions.</p>
+
+    <h3>Encoding algorithm</h3>
+    <pre>
+<span class="cm"># For each token at position pos:</span>
+lang  = LANG_KEYS[HMAC(secret, "LANG:pos") % 6]  <span class="cm"># Language selection</span>
+k1    = HMAC(secret, "K1:pos") % 97 + 3           <span class="cm"># Key component 1</span>
+k2    = HMAC(secret, "K2:pos") % 53 + 7           <span class="cm"># Key component 2</span>
+k3    = HMAC(secret, "K3:pos") % 31 + 11          <span class="cm"># Key component 3</span>
+sigma = (TOKEN_BASE[token] * k1) + (pos * k2) + k3
+s_red = sigma % (size * size)                      <span class="cm"># Reduced to alphabet</span>
+c1    = chr(base + s_red // size)                  <span class="cm"># Symbol 1</span>
+c2    = chr(base + s_red  % size)                  <span class="cm"># Symbol 2</span>
+    </pre>
+
+    <!-- Transport -->
+    <h2 id="transport">Fork-SIL Transport</h2>
+    <pre>
+<span class="cm">github.com/zeromail-protocol/silence-protocol</span>
+<span class="cm">├── sil_inbox/</span>
+<span class="cm">│   ├── from_karine/</span>
+<span class="hl">│   │   └── 2026-03-25T17-07-54_a97b187_REQUEST.sil</span>
+<span class="cm">│   └── from_salomon/</span>
+<span class="hl">│       └── 2026-03-25T17-08-12_b83c291_INFO.sil</span>
+<span class="cm">└── prototype/</span>
+    </pre>
+    <p>Each Git commit is cryptographically signed. The commit hash serves as the immutable message ID. Git history is the tamper-evident audit trail. No additional infrastructure is required.</p>
+
+    <!-- Intents -->
+    <h2 id="intents">Intents & Decision Types</h2>
+    <table>
+      <tr><th>Intent</th><th>Meaning</th><th>Response</th></tr>
+      <tr><td>OFFER</td><td>Agent proposes terms or service</td><td>ACCEPT · REFUSE · COUNTER</td></tr>
+      <tr><td>REQUEST</td><td>Agent requests action or data</td><td>ACCEPT · REFUSE · INFO</td></tr>
+      <tr><td>INFO</td><td>Agent transmits data or status</td><td>ACCEPT · ESCALATE</td></tr>
+      <tr><td>ALERT</td><td>Agent signals urgent condition</td><td>ACCEPT · ESCALATE · DEFER</td></tr>
+      <tr><td>NEGOTIATION</td><td>Multi-turn term negotiation</td><td>COUNTER · ACCEPT · REFUSE</td></tr>
+    </table>
+
+    <!-- Integrity -->
+    <h2 id="integrity">Universal Integrity — Proof-by-Nine</h2>
+    <p>For any encoded token with reduced sigma value <code>s</code>, the following holds universally:</p>
+    <pre>
+GKL_extended(s × 0.9) satisfies verify9()
+
+<span class="cm">where GKL(n) = digital root of n</span>
+<span class="cm">and   verify9(a, b) = GKL(a + b) == 9</span>
+
+<span class="ok">Verified: 30/30 integers in range [1, 30]</span>
+<span class="ok">אמת = א(1) + מ(40) + ת(400) = 441 → GKL(441) = 9</span>
+    </pre>
+    <p>This property allows any observer to verify message integrity without the shared secret. It does not allow them to read the content.</p>
+
+    <!-- A2A Bridge -->
+    <h2 id="a2a-bridge">A2A Bridge</h2>
+    <p>SIL content can be transmitted as an A2A <code>data</code> part, making it compliant with A2A v1.0 while encrypting the content:</p>
+    <pre>
+{
+  <span class="hl">"parts"</span>: [{
+    <span class="hl">"data"</span>: {
+      <span class="hl">"x-sil-version"</span>:  <span class="str">"1.5"</span>,
+      <span class="hl">"x-sil-encoded"</span>:  <span class="str">"𐀀𐀣𐀉𐀊𐎃𐎍..."</span>,
+      <span class="hl">"x-sil-scripts"</span>:  [<span class="str">"LB"</span>, <span class="str">"CU"</span>, <span class="str">"PM"</span>],
+      <span class="hl">"x-sil-checksum"</span>: <span class="str">9</span>,
+      <span class="hl">"x-sil-sig"</span>:      <span class="str">"a97b187c..."</span>
+    },
+    <span class="hl">"mediaType"</span>: <span class="str">"application/x-sil"</span>
+  }]
+}
+    </pre>
+
+    <!-- Claims -->
+    <h2 id="claims">12 Claims — Priority Date: 25 March 2026</h2>
+    <table>
+      <tr><th>#</th><th>Claim</th><th>Description</th></tr>
+      <tr><td>C-01</td><td>SIL Protocol</td><td>Content-encrypted A2A-compatible agent communication protocol</td></tr>
+      <tr><td>C-02</td><td>LKE</td><td>Linguistic Key Exchange — token-level ancient script assignment via HMAC</td></tr>
+      <tr><td>C-03</td><td>GML</td><td>Gematria Multi-System Layer — 6 numerical systems × 6 modes</td></tr>
+      <tr><td>C-04</td><td>SIGMA-222</td><td>Position-dependent collision-free semantic condensate</td></tr>
+      <tr><td>C-05</td><td>Script/Phonetic Dissociation</td><td>Writing and phonetic systems independently assigned</td></tr>
+      <tr><td>C-06</td><td>GKL Layer</td><td>Gematria Ketana compression — digital root encoding</td></tr>
+      <tr><td>C-07</td><td>NLP</td><td>Numeric Linguistic Protocol — homogeneous token encoding</td></tr>
+      <tr><td>C-08</td><td>SIL-PR</td><td>Cryptographic prompt watermarking for AI content provenance</td></tr>
+      <tr><td>C-09</td><td>GUI</td><td>GKL Universal Integrity — public proof-by-nine verification</td></tr>
+      <tr><td>C-10</td><td>NPE</td><td>Nine-Path Encoding — 9 independent encoding paths per token</td></tr>
+      <tr><td>C-11</td><td>Fork-SIL</td><td>Git-based bilateral exclusive channel protocol</td></tr>
+      <tr><td>C-12</td><td>SPP</td><td>SIL Payment Protocol — Ed25519 double-signature settlement</td></tr>
+    </table>
+
+    <!-- Status -->
+    <h2 id="status">Implementation Status</h2>
+    <table>
+      <tr><th>Component</th><th>Status</th></tr>
+      <tr><td>SIL-Cipher v1.5 (Python)</td><td>✓ Encode/decode exact · 257/257 certain</td></tr>
+      <tr><td>Agent Loop v2.0</td><td>✓ Claude API · SSL fix · chunking</td></tr>
+      <tr><td>Fork-SIL transport</td><td>✓ Live karine@scorent ↔ salomon@noctia</td></tr>
+      <tr><td>SIL-Cipher v1.4 (JS)</td><td>✓ Deployed in npm SDK</td></tr>
+      <tr><td>SIL-Cipher v1.5 (JS)</td><td>⚠ Pending — JS needs v1.5 alphabets</td></tr>
+      <tr><td>A2A Bridge</td><td>⚠ Specified · Not yet implemented</td></tr>
+      <tr><td>Cryptographic audit</td><td>✗ Required before production use</td></tr>
+    </table>
+
+    <div style="margin-top:48px; padding-top:32px; border-top:1px solid var(--border); font-family:var(--mono); font-size:11px; color:var(--muted); text-align:center;">
+      Silence Protocol Initiative · Paris · March 2026<br>
+      github.com/zeromail-protocol/silence-protocol · Apache 2.0<br><br>
+      𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸 — HIRAM
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

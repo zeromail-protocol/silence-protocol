@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SILENCE — The Founding Manifesto v2 — Hiram — March 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+  
+  :root {
+    --gold: #c9a84c;
+    --dark: #0a0a0a;
+    --muted: #444;
+    --light: #e8e0d0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'IM Fell English', serif;
+    font-size: 18px;
+    line-height: 1.8;
+    padding: 0;
+  }
+
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    border-bottom: 1px solid #222;
+  }
+
+  .sil-encoded {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 3rem;
+    opacity: 0.8;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 4rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+
+  .content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+
+  .section {
+    margin-bottom: 6rem;
+  }
+
+  h2 {
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    color: var(--light);
+  }
+
+  .pull-quote {
+    border-left: 2px solid var(--gold);
+    padding: 1.5rem 2rem;
+    margin: 3rem 0;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--gold);
+    line-height: 1.6;
+  }
+
+  .code-block {
+    background: #111;
+    border: 1px solid #222;
+    padding: 2rem;
+    margin: 2rem 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: #aaa;
+    overflow-x: auto;
+  }
+
+  .code-block .comment { color: #444; }
+  .code-block .highlight { color: var(--gold); }
+  .code-block .green { color: #5a8a5a; }
+
+  .claim {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #1a1a1a;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 1.5rem;
+  }
+
+  .claim-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    padding-top: 0.2rem;
+  }
+
+  .claim-title {
+    font-size: 1rem;
+    color: var(--light);
+    margin-bottom: 0.3rem;
+  }
+
+  .claim-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    line-height: 1.6;
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: #1a1a1a;
+    margin: 2rem 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .comparison-header {
+    background: #111;
+    padding: 1rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .comparison-cell {
+    background: #0d0d0d;
+    padding: 0.8rem 1rem;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .comparison-cell.sil { color: var(--light); }
+
+  .footer {
+    border-top: 1px solid #1a1a1a;
+    padding: 4rem 2rem;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    line-height: 2.5;
+  }
+
+  .hiram-sig {
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin: 2rem 0 0.5rem;
+    letter-spacing: 0.2em;
+  }
+
+  .emet {
+    font-size: 2rem;
+    color: var(--gold);
+    margin: 1rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="sil-encoded">𐀀𐀣𐀉𐀊𐎃𐎍𐎋𐎅𐤇𐤍 · 𐀀𐀧𐀃𐀽𐎅𐎐𐎓𐎞𐤃𐤙 · 𐀀𐀣𐐎𐐒𐎃𐎍𐎋𐎅</div>
+  <h1>SILENCE</h1>
+  <div class="subtitle">The Founding Manifesto v2 · Silence Protocol Initiative</div>
+  <div class="meta">
+    Author : Hiram<br>
+    Date : March 2026 · Paris<br>
+    Priority : horodaté Archive.org 25/03/2026<br>
+    Protocol : SIL v1.5<br>
+    HIRAM = 𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- I -->
+  <div class="section">
+    <h2>I. The problem no one finished solving</h2>
+
+    <p>In April 2025, Google launched the Agent2Agent Protocol (A2A). Fifty partners. A hundred organizations. The Linux Foundation. A real answer to a real problem: AI agents built on different platforms cannot talk to each other.</p>
+
+    <p>A2A solved interoperability. It did not solve confidentiality.</p>
+
+    <div class="pull-quote">
+      "A2A solved the question of whether agents can talk.<br>
+      SIL solves the question of whether anyone else can listen."
+    </div>
+
+    <p>Every A2A message is JSON-RPC over HTTP. Clear text. Loggable. Indexable. Readable by every layer of infrastructure between two agents — the cloud provider, the API gateway, the load balancer, the logging system, the monitoring tool. Google Cloud can read every message sent through Google Cloud.</p>
+
+    <p>This is not a criticism of A2A. It is a design choice. A2A is built for enterprise interoperability, not for privacy. The spec itself acknowledges it: <em>"Implementers must be acutely aware of the sensitivity of data exchanged."</em> Then it moves on.</p>
+
+    <p>We did not move on. We built SIL.</p>
+  </div>
+
+  <!-- II -->
+  <div class="section">
+    <h2>II. What SIL is</h2>
+
+    <p>SIL — the Silence Protocol — is a confidential communication layer for AI agents. It is not a replacement for A2A. It is the layer A2A delegates to when content must not be readable by infrastructure.</p>
+
+    <p>SIL answers one question that no existing protocol answers: can two agents exchange information such that every layer between them — cloud, network, logs, monitoring — sees only noise?</p>
+
+    <p>The answer is yes. The mechanism is the Linguistic Key Exchange.</p>
+
+    <div class="code-block">
+<span class="comment"># SOLDE RIVOLI — encoded in SIL-Cipher v1.5</span>
+<span class="comment"># Secret : scorent-noctia-2026</span>
+<span class="comment"># 6 ancient scripts — key-derived per token</span>
+
+S → <span class="highlight">Linear B</span>      𐀀𐀧   <span class="green">✓ 9</span>
+O → <span class="highlight">Linear B</span>      𐀃𐀽   <span class="green">✓ 9</span>
+L → <span class="highlight">Cuneiform</span>     𒀀𒂏   <span class="green">✓ 9</span>
+D → <span class="highlight">Palmyrene</span>     𐡋𐡄   <span class="green">✓ 9</span>
+E → <span class="highlight">Cypriot</span>       𐠊𐠣   <span class="green">✓ 9</span>
+  → <span class="highlight">Cuneiform</span>     𒀌𒀤   <span class="green">✓ 9</span>
+R → <span class="highlight">Proto-Sin.</span>    𞠁𞠜   <span class="green">✓ 9</span>
+...
+
+<span class="highlight">Encoded : 𐀀𐀧𐀃𐀽𒀀𒂏𐡋𐡄𐠊𐠣𒀌𒀤𞠁𞠜...</span>
+    </div>
+
+    <p>An interceptor sees a fragment of six ancient civilizations — Cuneiform, Linear B, Linear B Ideograms, Cypriot, Palmyrene, Proto-Sinaitic. Without the shared secret, there is no entry point. The content is structurally opaque, not merely encrypted.</p>
+  </div>
+
+  <!-- III -->
+  <div class="section">
+    <h2>III. The three protocols — how they fit</h2>
+
+    <p>The AI agent ecosystem is converging on three complementary standards. Each solves a different problem.</p>
+
+    <div class="comparison">
+      <div class="comparison-header">LAYER</div>
+      <div class="comparison-header">PROTOCOL</div>
+      <div class="comparison-header">SOLVES</div>
+
+      <div class="comparison-cell">Agent ↔ Tools</div>
+      <div class="comparison-cell">MCP (Anthropic, 2024)</div>
+      <div class="comparison-cell">How agents access data and tools</div>
+
+      <div class="comparison-cell">Agent ↔ Agent, open</div>
+      <div class="comparison-cell">A2A (Google/Linux Foundation, 2025)</div>
+      <div class="comparison-cell">How agents discover and interoperate across platforms</div>
+
+      <div class="comparison-cell sil">Agent ↔ Agent, confidential</div>
+      <div class="comparison-cell sil">SIL (Hiram, March 2026)</div>
+      <div class="comparison-cell sil">How agents communicate without infrastructure reading the content</div>
+    </div>
+
+    <p>SIL is not competing with A2A. A SIL-enabled agent is fully compatible with A2A. The SIL cipher sits at the payload level — the A2A transport layer remains intact. An agent can receive an A2A message, translate the intent into a SIL payload, route it through Fork-SIL, receive a SIL response, and return an A2A-compliant answer. The infrastructure sees A2A. The content travels in silence.</p>
+  </div>
+
+  <!-- IV -->
+  <div class="section">
+    <h2>IV. Who needs this</h2>
+
+    <p>A2A targets enterprise interoperability — Salesforce, SAP, ServiceNow, Accenture. These organizations need their agents to collaborate openly across platforms. Discoverability is a feature, not a liability.</p>
+
+    <p>SIL targets a different set of actors for whom discoverability is a liability:</p>
+
+    <p><strong>Regulated markets.</strong> A real estate scoring agent that transmits tenant financial data to a bank's underwriting agent. A fiscal audit agent that sends case files to a certified accountant's validation agent. A healthcare agent routing a prescription to a pharmacy agent. In each case, the content is regulated. The infrastructure provider must not read it.</p>
+
+    <p><strong>Competitive negotiations.</strong> An agent negotiating pricing on behalf of a buyer with a seller's agent. The terms of negotiation are commercially sensitive. Neither party wants the negotiation visible to the cloud provider running both agents.</p>
+
+    <p><strong>Intelligence and research.</strong> Agents gathering competitive intelligence, routing findings through intermediary agents, aggregating results. The communication topology itself is sensitive — not just the content.</p>
+
+    <p><strong>Independent operators.</strong> Entrepreneurs, small firms, developers building multi-agent systems without infrastructure to expose. Fork-SIL requires no server, no endpoint, no cloud account. Git is sufficient.</p>
+  </div>
+
+  <!-- V -->
+  <div class="section">
+    <h2>V. The five properties of SIL</h2>
+
+    <div class="claim">
+      <div class="claim-number">01</div>
+      <div>
+        <div class="claim-title">Content confidentiality</div>
+        <div class="claim-desc">Messages are encoded in SIL-Cipher v1.5. The payload is opaque to every party without the shared secret. Cloud logs contain only ancient script symbols.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">02</div>
+      <div>
+        <div class="claim-title">Linguistic Key Exchange (LKE)</div>
+        <div class="claim-desc">Each token is assigned a different ancient writing system by the shared secret via HMAC-SHA256. A single message mixes Cuneiform, Linear B, Cypriot, Palmyrene, Proto-Sinaitic. Without the key, there is no way to identify which script encodes which token.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">03</div>
+      <div>
+        <div class="claim-title">Public integrity verification</div>
+        <div class="claim-desc">Every encoded token satisfies a universal mathematical property: GKL_extended(SIGMA × 0.9) = 9. Anyone can verify a SIL message is intact without the key. Nobody can read its content without it. אמת = 9.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">04</div>
+      <div>
+        <div class="claim-title">Zero infrastructure</div>
+        <div class="claim-desc">Fork-SIL uses Git as transport. No HTTP endpoint. No server to expose. No cloud account required. A Git repository is sufficient for two agents to establish a bilateral, exclusive, cryptographically signed channel.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">05</div>
+      <div>
+        <div class="claim-title">Immutable trail</div>
+        <div class="claim-desc">Every SIL message is a Git commit. Every commit is a cryptographic signature. The communication history is tamper-evident by construction. No log can be altered without breaking the chain.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VI -->
+  <div class="section">
+    <h2>VI. The 12 priority claims — March 2026</h2>
+
+    <div class="claim">
+      <div class="claim-number">1</div>
+      <div>
+        <div class="claim-title">SIL — Silence Protocol</div>
+        <div class="claim-desc">Agent-native confidential communication protocol. Complementary to A2A. Operates at payload level.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">2</div>
+      <div>
+        <div class="claim-title">LKE — Linguistic Key Exchange</div>
+        <div class="claim-desc">Token-level language assignment via HMAC-SHA256. 6 ancient scripts, all ≥ 45 symbols. Zero collision guaranteed.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">3</div>
+      <div>
+        <div class="claim-title">GML — Gematria Multi-System Layer</div>
+        <div class="claim-desc">6 ancient numerical systems × 6 calculation modes. Additional obfuscation layer on top of LKE.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">4</div>
+      <div>
+        <div class="claim-title">SIGMA-222 — Semantic Condensate</div>
+        <div class="claim-desc">Per-token unique value derived from shared secret, position, and token identity. NP-hard to reverse without key.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">5</div>
+      <div>
+        <div class="claim-title">Script/Phonetic Dissociation</div>
+        <div class="claim-desc">Writing system and phonetic value are independent. The visual script conveys no phonetic information.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">6</div>
+      <div>
+        <div class="claim-title">GKL — Gematria Ketana Compression</div>
+        <div class="claim-desc">Iterative digit reduction. אמת = א(1)+מ(40)+ת(400) = 441 → GKL(441) = 9.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">7</div>
+      <div>
+        <div class="claim-title">NLP — Numeric Linguistic Protocol</div>
+        <div class="claim-desc">Canonical representation of numbers via their linguistic names. Language-agnostic numerical encoding.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">8</div>
+      <div>
+        <div class="claim-title">SIL-PR — Cryptographic Prompt Watermarking</div>
+        <div class="claim-desc">Invisible provenance markers embedded in LLM prompts. Detectable without altering model behavior.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">9</div>
+      <div>
+        <div class="claim-title">GUI — GKL Universal Integrity</div>
+        <div class="claim-desc">GKL_extended(N × 0.9) = 9 for all integers N ≥ 1. Universal integrity property. 30/30 verified algorithmically.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">10</div>
+      <div>
+        <div class="claim-title">NPE — Nine-Path Encoding</div>
+        <div class="claim-desc">Single token maps to ancient symbol pair via 9-verified sigma path. One-to-one mapping with secret dependency.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">11</div>
+      <div>
+        <div class="claim-title">Fork-SIL — Git-Based Bilateral Channel</div>
+        <div class="claim-desc">Git fork as exclusive bilateral channel. Commit = Ed25519 signature. Commit hash = message_id. Zero infrastructure required.</div>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="claim-number">12</div>
+      <div>
+        <div class="claim-title">SPP — SIL Payment Protocol</div>
+        <div class="claim-desc">Ed25519 double-signature triggered payment. Both agents sign. Settlement is automatic and cryptographically provable.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VII -->
+  <div class="section">
+    <h2>VII. What we are asking for</h2>
+
+    <p>We are not asking for adoption. We are asking for scrutiny.</p>
+
+    <p>The SIL-Cipher claims require independent cryptographic verification. The LKE system requires formal analysis of collision resistance. The GUI property requires mathematical proof beyond the 30/30 algorithmic verification we have published.</p>
+
+    <p>We are publishing the prototype, the RFC, and this manifesto simultaneously with an Archive.org timestamp as a priority date for the 12 claims above. We are not claiming granted patents. We are claiming conceptual priority.</p>
+
+    <p>The code is at <strong>github.com/zeromail-protocol/silence-protocol</strong>. The prototype encodes and decodes with zero collisions across all test cases. The integrity property holds for every token of every message.</p>
+
+    <p>If you find a flaw — publish it. That is how this gets better.</p>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="hiram-sig">𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸</div>
+  HIRAM · Silence Protocol Initiative · Paris · March 2026
+  <div class="emet">אמת = 9</div>
+  <br>
+  github.com/zeromail-protocol/silence-protocol<br>
+  Priority date : 25 March 2026 · Archive.org<br>
+  <br>
+  Protocol specification : MIT License<br>
+  SIL-Cipher : © 2026 Hiram · All rights reserved pending audit
+</div>
+
+</body>
+</html>
