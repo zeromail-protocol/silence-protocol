@@ -1,0 +1,21 @@
+{
+  "header": {
+    "sil_version": "1.3",
+    "message_id": "f1e28bc1db238f5b",
+    "sender": "salomon@noctia",
+    "recipient": "karine@scorent",
+    "sent_at": "2026-03-25T12:38:41.724Z",
+    "intent": "REQUEST",
+    "scripts_used": [
+      "LB",
+      "UG",
+      "PH",
+      "PS",
+      "AR",
+      "CU"
+    ],
+    "gkl_checksum": 3
+  },
+  "encoded": "𐀀𐀣𐀉𐀊𐎃𐎍𐎋𐎅𐤇𐤍𐀏𐀆𐎎𐎈𐤉𐤍𐀅𐀍𐎍𐎁𐀋𐀘𐤘𐤄𞠘𞠡𐎆𐎞𐎆𐎔𐤉𐤋𐤒𐤈𐡋𐡄𐎐𐎐𐎒𐎗𒀁𒂙𐎃𐎌𐡖𐡖𐀉𐀿𒀃𒃫𐎑𐎚𐡎𐡛𐀗𐀪𒀌𒀤𐀈𐁓𐤌𐤉𐤇𐤏𐤆𐤋𐤐𐤉𐀍𐀶𐤂𐤐𐤂𐤏𞠇𞠄𐎘𐎑𐀉𐁥𐎀𐎒𐀈𐀟𒀂𒂻𒀄𒃻𒀅𒁹𐤚𐤕𐀕𐁆𐡁𐡙𐀐𐁅𐡈𐡏𐎈𐎗𞠝𞠃𐀋𐁈𞠫𞠄𐤙𐤚𒀃𒃍𐀛𐀈𐎌𐎗𐎕𐎑𞠐𞠡𐀟𐀬𐤀𐤒𐡆𐡏𐎋𐎗𒀊𒁏𐀱𐀲𐤄𐤆𞠃𞠒𐤖𐤏𞠈𞠟𐀓𐁎𐎇𐎘",
+  "signature": "406ff0ee60197d448d7c41f4e637e20a463e0d5c665976b286e4a9cfeb7c1eea"
+}
