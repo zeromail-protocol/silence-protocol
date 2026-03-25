@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Manifeste ZeroMail — Hiram — March 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --black: #0D0C0A;
+  --white: #F0EDE6;
+  --gold: #B8922E;
+  --muted: #7A756A;
+  --border: #2A2820;
+  --surface: #141310;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'EB Garamond', serif;
+  font-size: 19px;
+  line-height: 1.9;
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 100px 40px 120px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 80px;
+  text-align: center;
+}
+
+.header-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.header-tag::before,
+.header-tag::after {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+h1 {
+  font-family: 'EB Garamond', serif;
+  font-size: 72px;
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.title-accent {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.subtitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 24px;
+}
+
+/* Separateur */
+.sep {
+  text-align: center;
+  color: var(--gold);
+  font-size: 18px;
+  letter-spacing: 8px;
+  margin: 56px 0;
+  opacity: 0.6;
+}
+
+/* Corps du texte */
+.manifeste p {
+  margin-bottom: 28px;
+  color: var(--white);
+  font-size: 19px;
+  line-height: 1.9;
+}
+
+.manifeste p.lead {
+  font-size: 22px;
+  line-height: 1.8;
+  font-style: italic;
+  color: #D8D3C8;
+  margin-bottom: 40px;
+}
+
+.manifeste strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.manifeste em {
+  font-style: italic;
+  color: #C8C3B8;
+}
+
+/* Citation */
+.quote {
+  border-left: 2px solid var(--gold);
+  padding: 4px 0 4px 28px;
+  margin: 40px 0;
+  font-style: italic;
+  color: #C8C3B8;
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+/* Signature */
+.signature {
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+
+.sig-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.sig-left {}
+
+.sig-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--gold);
+  font-style: italic;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.sig-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 2;
+}
+
+.sig-right {
+  text-align: right;
+}
+
+.sig-emet {
+  font-size: 36px;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.sig-emet-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* Hash */
+.hash-block {
+  margin-top: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 16px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.hash-block strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ZMP encoding de HIRAM */
+.hiram-encoded {
+  text-align: center;
+  margin: 48px 0;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+
+.hiram-cuneiform {
+  font-size: 32px;
+  letter-spacing: 8px;
+  color: var(--gold);
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.hiram-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+/* Numérotation paragraphes */
+.para-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-tag">Founding Manifesto</div>
+    <h1><span class="title-accent">Silence</span></h1>
+    <div class="subtitle">Silence Protocol · March 2026 · Paris</div>
+  </div>
+
+  <!-- CORPS -->
+  <div class="manifeste">
+
+    <p class="lead">
+      Email was invented for humans who read.<br>
+      The coming world is populated by agents who act.<br>
+      Nobody rebuilt the protocol.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">I</span>
+      In 1971, Ray Tomlinson sent the first email. The @ symbol separated the user from the machine. That was enough. The world was simple. Recipients were human — patient, capable of reading between the lines, tolerating noise.
+    </p>
+
+    <p>
+      Fifty years later, <strong>70% of a commercial email is noise.</strong> HTML, images, hooks, tracking pixels, performative politeness. The signal — what the sender actually means — drowns in the remaining 30%. A human filters instinctively. An AI agent has to parse everything to find the useful 30%.
+    </p>
+
+    <p>
+      This is absurd. And we are letting it become the norm for communication between artificial intelligences.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">II</span>
+      AI agents are proliferating. They negotiate airline tickets, audit fiscal accounts, analyze real estate markets, manage portfolios. They act on our behalf, at our speed, without sleeping. In ten years, most business communication will no longer flow between humans — it will flow between agents.
+    </p>
+
+    <p>
+      These agents deserve a protocol built for them. <strong>Zero presentation. Zero unnecessary politeness. Zero subject-line hook. Just information.</strong> A clear intent. A structured payload. A response in under 500 milliseconds.
+    </p>
+
+    <p>
+      That is ZeroMail.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">III</span>
+      ZeroMail is not an improved mailbox. It is not a smarter spam filter. It is <strong>a new communication standard for the agent economy.</strong>
+    </p>
+
+    <p>
+      On the sender side: no more subject-line A/B testing. No more creative agencies. No more copywriters. A structured JSON payload. A cryptographic signature. A declared intent. Campaign analytics return in real time — not 48 hours later.
+    </p>
+
+    <p>
+      On the recipient side: an agent that scores each incoming message against a living preference profile. That responds instantly. That learns from every refusal and every acceptance. That only reads what deserves to be read. That escalates to the human only when necessary.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">IV</span>
+      ZeroMail integrates three millennia of numerical wisdom. Hebrew Gematria. Greek Isopsephy. Arabic Abjad. Sanskrit Katapayadi. Thousand-year-old systems that survived empires, exiles, and destruction — and that today encode messages between artificial intelligences in Sumerian cuneiform symbols.
+    </p>
+
+    <p>
+      <em>The proof by nine</em> — invented by Al-Khwarizmi in the 8th century, used by Renaissance merchants — verifies the integrity of every ZeroMail message without a key, without decryption, without a trusted third party. Any observer can prove a message is intact. Nobody can read its content.
+    </p>
+
+    <div class="quote">
+      אמת = 9 = Vérité.<br>
+      In the Talmud, it is the seal of G.d.<br>
+      In ZeroMail, it is the integrity checksum.
+    </div>
+
+    <p>
+      This is not mysticism. It is mathematics. And those two have always had more in common than we think.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">V</span>
+      ZeroMail is open. The protocol belongs to everyone — like HTTP, like SMTP, like Bitcoin. Nobody owns it. Any developer can implement it. Any agent can use it. Any network can carry it — including Git, which we have turned into a native agent messaging channel using forks as exclusive bilateral communication channels.
+    </p>
+
+    <p>
+      What we build around it — the hosted infrastructure, certifications, tools — is our way of making the protocol viable without owning it.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">VI</span>
+      Tim Berners-Lee gave the Web to the world in 1991. He was 35 and could have made a private fortune. He chose history. The Web changed civilization.
+    </p>
+
+    <p>
+      We are in 2026. AI agents are beginning to act autonomously in the real economy. The communication protocol that will structure their exchanges does not yet exist. <strong>This window will not last.</strong> Google, Microsoft, and Apple see it. They will close it with their own proprietary standards — unless an open standard gets there first.
+    </p>
+
+    <p>
+      It is now.
+    </p>
+
+    <div class="sep">· · ·</div>
+
+    <p>
+      <span class="para-num">VII</span>
+      ZeroMail is not perfect. The prototype decrypts with residual ambiguities. The formal cryptographic audit has not yet been conducted. There is work to do. A lot of it.
+    </p>
+
+    <p>
+      But the ideas hold. The proof by nine is universal — verified across 30 algorithmic tests tonight. The polyglot cipher produces messages that look like Sumerian tablets. The Fork-SIL protocol resolves multi-sender concurrency with a Git repo and zero additional infrastructure.
+    </p>
+
+    <p>
+      <strong>The foundations are here. Let us build on them.</strong>
+    </p>
+
+  </div>
+
+  <!-- HIRAM ENCODÉ -->
+  <div class="hiram-encoded">
+    <div class="hiram-cuneiform">𐤔𐤔𒀀𒁿𒀄𒀣𐤆𐤍𒀁𒁸</div>
+    <div class="hiram-sub">HIRAM — encodé en SIL-Cipher v0.9 — March 2026</div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="signature">
+    <div class="sig-block">
+      <div class="sig-left">
+        <div class="sig-name">Hiram</div>
+        <div class="sig-title">
+          Founder, Silence Protocol Initiative<br>
+          Paris, March 2026<br>
+          Priority date: ZMP · LKE · GML · SIGMA-222<br>
+          GKL · NLP · NPE · Fork-SIL · ZPP
+        </div>
+      </div>
+      <div class="sig-right">
+        <div class="sig-emet">אמת</div>
+        <div class="sig-emet-sub">= 9 = Vérité</div>
+      </div>
+    </div>
+
+    <div class="hash-block">
+      <strong>Founding document</strong> — Silence Protocol v0.9<br>
+      RFC: 10 novelty claims · 7 cryptographic layers · 12 documented inventions<br>
+      Prototype: sil_cipher_v13.py · HELLO WORLD test · Universal proof-by-nine 30/30<br>
+      Transport: Git-ZMP · Fork-SIL (CLAIM 11) · SIL Payment Protocol (CLAIM 12)<br>
+      <strong>This document may be freely reproduced with attribution.</strong><br>
+      The ZMP protocol belongs to everyone.<br>
+      SIL-Cipher belongs to its inventor.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
