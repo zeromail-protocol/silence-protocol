@@ -55,6 +55,7 @@ const { encode, decode, send, receive, init } = require('@silence-protocol/sil')
 const { buildA2AMessage, decodeFromA2AMessage } = require('@silence-protocol/sil/a2a');
 const { openRound, roundHeader } = require('@silence-protocol/sil/rounds');
 const { humanToSIL, silToHuman } = require('@silence-protocol/sil/bridge');
+const { createGroup, joinGroup, sendGroup, receiveGroup } = require('@silence-protocol/sil/group');
 ```
 
 ## A2A Bridge
@@ -151,29 +152,44 @@ const natural = await silToHuman(
 // → "Le locataire Rivoli affiche un score de 745/1000, des revenus de 4 200€/mois..."
 ```
 
-## Agent Groups (Star Topology)
+## Group Protocol (Multicast)
 
-Multiple agents with pairwise secrets. The orchestrator broadcasts to all and aggregates responses.
+One message encrypted once, readable by all group members. One shared group secret instead of N bilateral channels.
+
+### CLI
+
+```bash
+sil group create --id RIVOLI_PROJECT --members "salomon@noctia,karine@scorent,fiscal@fiscalready" --secret "group-secret"
+sil group join --id RIVOLI_PROJECT --secret "group-secret"
+sil group send "REUNION DEMAIN 14H" --group RIVOLI_PROJECT --intent INFO
+sil group receive --group RIVOLI_PROJECT
+sil group list
+```
+
+### SDK
 
 ```js
-const { encode, decode } = require('@silence-protocol/sil');
+const { createGroup, joinGroup, sendGroup, receiveGroup, listGroups } = require('@silence-protocol/sil/group');
 
-const secrets = {
-  'salomon-karine': 'secret-1',
-  'salomon-fiscal': 'secret-2',
-};
+// Create a group
+const group = createGroup('RIVOLI_PROJECT', [
+  'salomon@noctia', 'karine@scorent', 'fiscal@fiscalready'
+], 'group-secret', 'salomon@noctia');
 
-// Broadcast same request with different secrets
-const encKarine = encode('ANALYSE RIVOLI', secrets['salomon-karine']);
-const encFiscal = encode('ANALYSE RIVOLI', secrets['salomon-fiscal']);
+// Each agent joins locally
+joinGroup('RIVOLI_PROJECT', 'karine@scorent', 'group-secret', group.members);
 
-// Each agent decodes with its own secret
-const decK = decode(encKarine[0].encoded, secrets['salomon-karine']);
-const decF = decode(encFiscal[0].encoded, secrets['salomon-fiscal']);
+// Send to group — encoded ONCE, readable by ALL members
+sendGroup('REUNION DEMAIN 14H', 'INFO', 'RIVOLI_PROJECT', 'salomon@noctia', 'group-secret');
 
-// Cross-secret isolation: Karine cannot read Fiscal's messages
-const cross = decode(encKarine[0].encoded, secrets['salomon-fiscal']);
-// cross.decoded → garbage (isolated)
+// Any member receives
+const messages = receiveGroup('RIVOLI_PROJECT', 'karine@scorent', 'group-secret');
+// messages[0].decoded  → "REUNION DEMAIN 14H"
+// messages[0].certain  → 18/18
+// messages[0].sigOk    → true
+// messages[0].sender   → "salomon@noctia"
+
+// Cross-secret isolation: wrong secret = invalid signature + garbage
 ```
 
 ## Example Conversation Output
@@ -216,9 +232,10 @@ Verified: 30/30
 ## Examples
 
 ```bash
-node examples/test_a2a.js            # A2A Bridge end-to-end
-node examples/test_conversation.js   # Full agent conversation
-node examples/test_group.js          # Star topology group
+node examples/test_a2a.js              # A2A Bridge end-to-end
+node examples/test_conversation.js     # Full agent conversation
+node examples/test_group.js            # Star topology (pairwise secrets)
+node examples/test_group_broadcast.js  # Group protocol (shared secret)
 ```
 
 ## Repository

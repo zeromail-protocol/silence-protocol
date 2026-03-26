@@ -10,6 +10,7 @@ const { execSync } = require('child_process');
 const path = require('path');
 const fs   = require('fs');
 const { encode, decode, send, receive, init, loadConfig, ALPHABETS } = require('../lib/index');
+const { createGroup, joinGroup, loadGroup, listGroups, sendGroup, receiveGroup } = require('../lib/group');
 
 const G = '\x1b[33m', R = '\x1b[0m', B = '\x1b[1m', M = '\x1b[90m', GR = '\x1b[32m';
 
@@ -201,5 +202,108 @@ program.command('decode <encoded>')
     console.log(`${B}Integrity${R}: ${dec.integrity ? `${GR}✓${R}` : '\x1b[31m✗\x1b[0m'}\n`);
   });
 
-program.name('sil').description('Silence Protocol — Content-encrypted agent communication').version('1.5.0');
+// ─── sil group ────────────────────────────────────────────
+const group = program.command('group').description('SIL Group Protocol — multicast encrypted messaging');
+
+group.command('create')
+  .description('Create a new SIL group')
+  .requiredOption('--id <groupId>', 'Group identifier')
+  .requiredOption('--members <members>', 'Comma-separated agent IDs')
+  .requiredOption('--secret <secret>', 'Group shared secret')
+  .action((opts) => {
+    const config = loadConfig();
+    const agentId = config?.agent_id || opts.members.split(',')[0].trim();
+    const members = opts.members.split(',').map(m => m.trim());
+    const grp = createGroup(opts.id, members, opts.secret, agentId);
+    joinGroup(opts.id, agentId, opts.secret, members);
+    box('✓ SIL Group Created', [
+      `Group   : ${opts.id}`,
+      `Members : ${members.join(', ')}`,
+      `Secret  : ${'•'.repeat(opts.secret.length)}`,
+      `Creator : ${agentId}`,
+      '',
+      `Send    : sil group send "MSG" --group ${opts.id}`,
+      `Receive : sil group receive --group ${opts.id}`,
+    ]);
+  });
+
+group.command('join')
+  .description('Join an existing SIL group')
+  .requiredOption('--id <groupId>', 'Group identifier')
+  .requiredOption('--secret <secret>', 'Group shared secret')
+  .action((opts) => {
+    const config = loadConfig();
+    if (!config) { console.error('✗ No config. Run: sil init first'); process.exit(1); }
+    joinGroup(opts.id, config.agent_id, opts.secret);
+    box('✓ Joined SIL Group', [
+      `Group : ${opts.id}`,
+      `Agent : ${config.agent_id}`,
+    ]);
+  });
+
+group.command('send <message>')
+  .description('Send a message to a SIL group')
+  .requiredOption('--group <groupId>', 'Group identifier')
+  .option('--intent <intent>', 'OFFER|REQUEST|INFO|ALERT', 'INFO')
+  .action((message, opts) => {
+    const grp = loadGroup(opts.group);
+    if (!grp) { console.error(`✗ Group "${opts.group}" not found. Run: sil group join`); process.exit(1); }
+    const { filepaths, enc_chunks } = sendGroup(message, opts.intent, opts.group, grp.agent_id, grp.group_secret);
+    const enc = enc_chunks[0];
+    const scriptNames = enc.langsUsed.map(l => ALPHABETS[l].name);
+    box('SIL — GROUP MESSAGE SENT', [
+      `Group   : ${opts.group}`,
+      `From    : ${grp.agent_id}`,
+      `Intent  : ${opts.intent}`,
+      `Message : ${message}`,
+      '',
+      `Encoded : ${enc.encoded.slice(0, 40)}...`,
+      `Scripts : ${scriptNames.join(' · ')}`,
+      `Tokens  : ${enc.results.length}`,
+      `GKL     : ${enc.gklGlobal}`,
+    ]);
+  });
+
+group.command('receive')
+  .description('Receive messages from a SIL group')
+  .requiredOption('--group <groupId>', 'Group identifier')
+  .action((opts) => {
+    const grp = loadGroup(opts.group);
+    if (!grp) { console.error(`✗ Group "${opts.group}" not found.`); process.exit(1); }
+    const messages = receiveGroup(opts.group, grp.agent_id, grp.group_secret);
+    if (!messages.length) {
+      console.log(`\n${M}SIL Group "${opts.group}" — No new messages.${R}\n`);
+      return;
+    }
+    console.log(`\n${G}${B}SIL Group "${opts.group}" — ${messages.length} NEW MESSAGE(S)${R}\n`);
+    for (const msg of messages) {
+      if (msg.error) { console.log(`\x1b[31m✗ ${msg.error}${R}\n`); continue; }
+      const scriptNames = (msg.header.scripts_used || []).map(l => ALPHABETS[l]?.name || l);
+      box(`✓ ${msg.intent} — ${msg.sender}`, [
+        `Group     : ${msg.groupId}`,
+        `From      : ${msg.sender}`,
+        `Intent    : ${msg.intent}`,
+        `Scripts   : ${scriptNames.join(' · ')}`,
+        '',
+        `Signature : ${msg.sigOk ? '✓ valid' : '✗ INVALID'}`,
+        `Decoded   : ${msg.decoded}`,
+        `Certain   : ${msg.certain}/${msg.total} tokens`,
+      ]);
+    }
+  });
+
+group.command('list')
+  .description('List all groups')
+  .action(() => {
+    const groups = listGroups();
+    if (!groups.length) { console.log(`\n${M}No groups. Run: sil group create${R}\n`); return; }
+    console.log(`\n${G}${B}SIL — ${groups.length} GROUP(S)${R}\n`);
+    for (const g of groups) {
+      console.log(`  ${B}${g.group_id}${R} — ${g.agent_id} — joined ${g.joined_at?.slice(0, 10) || '?'}`);
+      if (g.members?.length) console.log(`  ${M}Members: ${g.members.join(', ')}${R}`);
+    }
+    console.log();
+  });
+
+program.name('sil').description('Silence Protocol — Content-encrypted agent communication').version('1.5.2');
 program.parse();
