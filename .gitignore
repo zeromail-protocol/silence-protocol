@@ -1,0 +1,7 @@
+__pycache__/
+node_modules/
+.sil-config
+.sil-processed
+.sil-agent
+sil_inbox/
+*.pyc

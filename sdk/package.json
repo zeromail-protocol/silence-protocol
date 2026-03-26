@@ -1,0 +1,44 @@
+{
+  "name": "@silence-protocol/sil",
+  "version": "1.5.1",
+  "description": "Silence Protocol (SIL) — Content-encrypted agent-to-agent communication. A2A confidentiality layer. 6 ancient scripts. Zero infrastructure.",
+  "bin": {
+    "sil": "./bin/sil.js"
+  },
+  "main": "./lib/index.js",
+  "keywords": [
+    "ai-agents",
+    "protocol",
+    "cryptography",
+    "silence-protocol",
+    "sil",
+    "a2a",
+    "agent-communication",
+    "ancient-scripts",
+    "lke",
+    "zero-infrastructure"
+  ],
+  "author": "Hiram — Silence Protocol Initiative <hiram@silenceprotocol.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zeromail-protocol/silence-protocol"
+  },
+  "homepage": "https://github.com/zeromail-protocol/silence-protocol",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^12.1.0",
+    "inquirer": "^10.2.2",
+    "ora": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./a2a": "./lib/a2a_bridge.js",
+    "./rounds": "./lib/rounds.js",
+    "./bridge": "./lib/bridge.js",
+    "./cipher": "./lib/cipher.js"
+  }
+}
