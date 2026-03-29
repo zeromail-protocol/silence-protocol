@@ -13,7 +13,7 @@ const crypto = require('crypto');
 const { encode, decodeChunk, ALPHABETS } = require('./cipher');
 
 const SIL_MEDIA_TYPE = 'application/x-sil';
-const SIL_VERSION    = '1.5';
+const SIL_VERSION    = '1.6';
 
 // ============================================================
 // ENCODE SIL → A2A Part
@@ -43,6 +43,7 @@ function encodeToA2APart(message, secret, sender, intent = 'INFO') {
       'x-sil-sender':    sender,
       'x-sil-intent':    intent,
       'x-sil-message-id': msgId,
+      'x-sil-nonce':     chunk.nonce,
       'x-sil-chunk':     chunk.chunkIndex,
       'x-sil-chunks':    chunk.totalChunks,
       'x-sil-scripts':   chunk.langsUsed,
@@ -87,7 +88,7 @@ function buildA2AMessage(message, secret, sender, recipient, intent = 'INFO', co
         contextId: contextId || crypto.randomUUID(),
         parts,
         metadata: {
-          'x-protocol':    'SIL/1.5',
+          'x-protocol':    'SIL/1.6',
           'x-sil-sender':  sender,
           'x-sil-intent':  intent,
         }
@@ -141,7 +142,8 @@ function decodeFromA2AMessage(a2aMessage, secret) {
     }
 
     const chunkIndex = sil['x-sil-chunk'] || 0;
-    const dec = decodeChunk(sil['x-sil-encoded'], secret, chunkIndex);
+    const nonce = sil['x-sil-nonce'] || '';
+    const dec = decodeChunk(sil['x-sil-encoded'], secret, chunkIndex, nonce);
 
     results.push({
       chunkIndex,
@@ -209,8 +211,8 @@ function buildAgentCard(agentId, description, skills = [], endpoint = null) {
     })),
     // SIL extension declaration
     extensions: [{
-      uri:     'https://silenceprotocol.org/extensions/sil/1.5',
-      version: '1.5',
+      uri:     'https://silenceprotocol.org/extensions/sil/1.6',
+      version: '1.6',
       params: {
         cipher:       'LKE-6',
         scripts:      ['CU', 'LB', 'LB2', 'CP', 'PM', 'PS'],
@@ -224,7 +226,7 @@ function buildAgentCard(agentId, description, skills = [], endpoint = null) {
       description: 'HMAC-SHA256 shared secret. Exchange out-of-band.',
     }],
     metadata: {
-      'x-protocol': 'SIL/1.5',
+      'x-protocol': 'SIL/1.6',
       'x-integrity': 'proof-by-nine',
       'x-repo':     'github.com/zeromail-protocol/silence-protocol',
     }

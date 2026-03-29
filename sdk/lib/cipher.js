@@ -1,7 +1,8 @@
 /**
- * SIL-Cipher v1.5
+ * SIL-Cipher v1.6
  * Linguistic Key Exchange — 6 ancient scripts, all >= 45 symbols
  * Zero collisions guaranteed across all 37 token types
+ * Per-message nonce — defeats frequency analysis
  */
 
 const crypto = require('crypto');
@@ -24,14 +25,14 @@ const TOKEN_BASE = {};
 '0123456789'.split('').forEach(d => { TOKEN_BASE[d] = parseInt(d) + 30; });
 TOKEN_BASE[' '] = 50;
 
-function derive(secret, pos, purpose) {
-  const key = Buffer.from(secret, 'utf8');
+function derive(secret, pos, purpose, nonce = '') {
+  const key = Buffer.from(secret + nonce, 'utf8');
   const msg = Buffer.from(`${purpose}:${pos}`, 'utf8');
   return crypto.createHmac('sha256', key).update(msg).digest().readUInt32BE(0);
 }
 
-function getLang(secret, pos, token) {
-  const val = derive(secret, pos, 'LANG');
+function getLang(secret, pos, token, nonce = '') {
+  const val = derive(secret, pos, 'LANG', nonce);
   const t = token.toUpperCase();
   if (/[0-9]/.test(t) || t === ' ') return LARGE_LANGS[val % 2];
   return LANG_KEYS[val % 6];
@@ -54,17 +55,17 @@ function gklExt(x) {
 
 function verify9(a, b) { return gkl(a + b) === 9; }
 
-function sigmaFull(token, pos, secret) {
+function sigmaFull(token, pos, secret, nonce = '') {
   const t = token.toUpperCase();
   const base = TOKEN_BASE[t] || (t.charCodeAt(0) % 40 + 60);
-  const k1 = derive(secret, pos, 'K1') % 97 + 3;
-  const k2 = derive(secret, pos, 'K2') % 53 + 7;
-  const k3 = derive(secret, pos, 'K3') % 31 + 11;
+  const k1 = derive(secret, pos, 'K1', nonce) % 97 + 3;
+  const k2 = derive(secret, pos, 'K2', nonce) % 53 + 7;
+  const k3 = derive(secret, pos, 'K3', nonce) % 31 + 11;
   return (base * k1) + (pos * k2) + k3;
 }
 
-function sigmaReduced(token, pos, secret, lang) {
-  return sigmaFull(token, pos, secret) % (ALPHABETS[lang].size ** 2);
+function sigmaReduced(token, pos, secret, lang, nonce = '') {
+  return sigmaFull(token, pos, secret, nonce) % (ALPHABETS[lang].size ** 2);
 }
 
 function sigmaToSymbols(sigma, lang) {
@@ -92,7 +93,7 @@ function integrityCheck(s) {
   return { a, b, ok: verify9(a, b) };
 }
 
-function encodeChunk(message, secret, chunkIndex = 0, totalChunks = 1) {
+function encodeChunk(message, secret, chunkIndex = 0, totalChunks = 1, nonce = '') {
   const tokens = [...message.toUpperCase()];
   const results = [];
   let encoded = '';
@@ -100,31 +101,36 @@ function encodeChunk(message, secret, chunkIndex = 0, totalChunks = 1) {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     const absPos = chunkIndex * CHUNK_SIZE + i;
-    const lang = getLang(secret, absPos, token);
-    const sRed = sigmaReduced(token, absPos, secret, lang);
+    const lang = getLang(secret, absPos, token, nonce);
+    const sRed = sigmaReduced(token, absPos, secret, lang, nonce);
     const symbols = sigmaToSymbols(sRed, lang);
     const { a, b, ok } = integrityCheck(sRed);
     results.push({ token, pos: absPos, lang, langName: ALPHABETS[lang].name, symbols, pair: `${a}·${b}`, ok });
     encoded += symbols;
   }
 
-  const total = results.reduce((s, r) => s + sigmaReduced(r.token, r.pos, secret, r.lang), 0);
+  const total = results.reduce((s, r) => s + sigmaReduced(r.token, r.pos, secret, r.lang, nonce), 0);
   const langsUsed = [...new Set(results.map(r => r.lang))];
-  return { chunkIndex, totalChunks, original: message, encoded, results, gklGlobal: gkl(total), langsUsed, isChunked: totalChunks > 1 };
+  return { chunkIndex, totalChunks, original: message, encoded, results, gklGlobal: gkl(total), langsUsed, isChunked: totalChunks > 1, nonce };
+}
+
+function generateNonce() {
+  return crypto.randomBytes(16).toString('hex');
 }
 
 function encode(message, secret) {
   const msg = message.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+  const nonce = generateNonce();
   if (msg.length <= CHUNK_SIZE) {
-    return [encodeChunk(msg, secret, 0, 1)];
+    return [encodeChunk(msg, secret, 0, 1, nonce)];
   }
   const totalChunks = Math.ceil(msg.length / CHUNK_SIZE);
   return Array.from({ length: totalChunks }, (_, i) =>
-    encodeChunk(msg.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE), secret, i, totalChunks)
+    encodeChunk(msg.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE), secret, i, totalChunks, nonce)
   );
 }
 
-function decodeChunk(encodedMsg, secret, chunkIndex = 0) {
+function decodeChunk(encodedMsg, secret, chunkIndex = 0, nonce = '') {
   const codepoints = [...encodedMsg];
   const pairs = [];
   for (let i = 0; i < codepoints.length; i += 2) pairs.push([codepoints[i], codepoints[i + 1]]);
@@ -143,8 +149,8 @@ function decodeChunk(encodedMsg, secret, chunkIndex = 0) {
     const absPos = chunkIndex * CHUNK_SIZE + i;
 
     const matches = Object.keys(TOKEN_BASE).filter(token => {
-      if (getLang(secret, absPos, token) !== lang) return false;
-      return sigmaReduced(token, absPos, secret, lang) === received;
+      if (getLang(secret, absPos, token, nonce) !== lang) return false;
+      return sigmaReduced(token, absPos, secret, lang, nonce) === received;
     });
 
     const tokenDecoded = matches[0] || '?';
@@ -155,8 +161,8 @@ function decodeChunk(encodedMsg, secret, chunkIndex = 0) {
   return { encoded: encodedMsg, decoded, results, integrity: results.every(r => r.ok), certain: results.filter(r => r.certain).length, total: pairs.length };
 }
 
-function decode(encodedMsg, secret, chunkIndex = 0) {
-  return decodeChunk(encodedMsg, secret, chunkIndex);
+function decode(encodedMsg, secret, chunkIndex = 0, nonce = '') {
+  return decodeChunk(encodedMsg, secret, chunkIndex, nonce);
 }
 
-module.exports = { encode, decode, decodeChunk, gkl, verify9, ALPHABETS, LANG_KEYS, CHUNK_SIZE };
+module.exports = { encode, decode, decodeChunk, generateNonce, gkl, verify9, ALPHABETS, LANG_KEYS, CHUNK_SIZE };

@@ -45,7 +45,7 @@ function humanToSIL(humanText) {
   // Remove common noise
   let clean = humanText
     .replace(/^(salomon|karine|moise|hey|bonjour|bonsoir|merci|svp|stp)[,\s]*/gi, '')
-    .replace(/[?!.,;:]+/g, ' ')
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .normalize('NFD').replace(/[̀-ͯ]/g, '')

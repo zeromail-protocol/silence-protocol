@@ -38,7 +38,7 @@ function createGroup(groupId, members, groupSecret, creator = null) {
     group_secret: groupSecret,
     creator:      creator || members[0],
     created_at:   new Date().toISOString(),
-    sil_version:  '1.5',
+    sil_version:  '1.6',
     protocol:     'SIL-Group/1.0',
   };
 }
@@ -61,7 +61,7 @@ function joinGroup(groupId, agentId, groupSecret, members = [], dir = process.cw
     group_secret: groupSecret,
     members,
     joined_at:    new Date().toISOString(),
-    sil_version:  '1.5',
+    sil_version:  '1.6',
   };
 
   const filepath = path.join(groupsDir, `${groupId}.json`);
@@ -123,7 +123,7 @@ function sendGroup(message, intent, groupId, senderAgentId, groupSecret, dir = p
 
     const silContent = {
       header: {
-        sil_version:  '1.5',
+        sil_version:  '1.6',
         protocol:     'SIL-Group/1.0',
         message_id:   msgId,
         group_id:     groupId,
@@ -131,6 +131,7 @@ function sendGroup(message, intent, groupId, senderAgentId, groupSecret, dir = p
         recipient:    `group:${groupId}`,
         sent_at:      new Date().toISOString(),
         intent,
+        'x-sil-nonce': chunk.nonce,
         scripts_used: chunk.langsUsed,
         gkl_checksum: chunk.gklGlobal,
         chunk_index:  chunk.chunkIndex,
@@ -207,7 +208,8 @@ function receiveGroup(groupId, agentId, groupSecret, dir = process.cwd()) {
 
       // Decode
       const chunkIndex = header.chunk_index || 0;
-      const dec = decodeChunk(encoded, groupSecret, chunkIndex);
+      const nonce = header['x-sil-nonce'] || '';
+      const dec = decodeChunk(encoded, groupSecret, chunkIndex, nonce);
 
       messages.push({
         filepath,

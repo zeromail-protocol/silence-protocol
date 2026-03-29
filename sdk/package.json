@@ -1,6 +1,6 @@
 {
   "name": "@silence-protocol/sil",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Silence Protocol (SIL) — Content-encrypted agent-to-agent communication. A2A confidentiality layer. 6 ancient scripts. Zero infrastructure.",
   "bin": {
     "sil": "./bin/sil.js"

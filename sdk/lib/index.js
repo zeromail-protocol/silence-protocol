@@ -1,5 +1,5 @@
 /**
- * SIL SDK — Silence Protocol v1.5
+ * SIL SDK — Silence Protocol v1.6
  * Content-encrypted agent-to-agent communication
  * A2A confidentiality layer
  */
@@ -39,9 +39,10 @@ function send(message, intent = 'INFO', config, dir = process.cwd()) {
 
     const silContent = {
       header: {
-        sil_version: '1.5', message_id: msgId,
+        sil_version: '1.6', message_id: msgId,
         sender: agent_id, recipient: recipient_id,
         sent_at: new Date().toISOString(), intent,
+        'x-sil-nonce': chunk.nonce,
         scripts_used: chunk.langsUsed, gkl_checksum: chunk.gklGlobal,
         chunk_index: chunk.chunkIndex, total_chunks: enc_chunks.length
       },
@@ -99,7 +100,8 @@ function receive(config, dir = process.cwd()) {
         continue;
       }
       const chunkIndex = header.chunk_index || 0;
-      const dec = decodeChunk(encoded, shared_secret, chunkIndex);
+      const nonce = header['x-sil-nonce'] || '';
+      const dec = decodeChunk(encoded, shared_secret, chunkIndex, nonce);
       messages.push({ filepath, header, encoded, decoded: dec.decoded, certain: dec.certain, total: dec.total, integrity: dec.integrity, sigOk });
       fs.appendFileSync(path.join(dir, DONE_FILE), filepath + '\n');
     } catch (e) {
@@ -112,7 +114,7 @@ function receive(config, dir = process.cwd()) {
 async function init(options) {
   const { agentId, recipientId, secret, dir = process.cwd() } = options;
   fs.mkdirSync(path.join(dir, INBOX_DIR), { recursive: true });
-  const config = { agent_id: agentId, recipient_id: recipientId, shared_secret: secret, sil_version: '1.5', created_at: new Date().toISOString() };
+  const config = { agent_id: agentId, recipient_id: recipientId, shared_secret: secret, sil_version: '1.6', created_at: new Date().toISOString() };
   saveConfig(config, dir);
   return config;
 }

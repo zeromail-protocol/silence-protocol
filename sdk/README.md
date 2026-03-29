@@ -93,7 +93,8 @@ A2A Part structure:
 {
   "parts": [{
     "data": {
-      "x-sil-version": "1.5",
+      "x-sil-version": "1.6",
+      "x-sil-nonce": "a1b2c3d4e5f6...",
       "x-sil-encoded": "𐀀𐀣𐀉𐀊𐎃𐎍...",
       "x-sil-signature": "a1b2c3...",
       "x-sil-intent": "REQUEST",
@@ -207,6 +208,10 @@ const messages = receiveGroup('RIVOLI_PROJECT', 'karine@scorent', 'group-secret'
     des revenus de 4 200€/mois et aucun incident
     sur les 12 derniers mois."
 ```
+
+## Known Limitations
+
+- **v1.5.x**: deterministic encoding (no nonce) — same message + same secret = same output every time, enabling frequency analysis. **Fixed in v1.6.0** with per-message random nonce.
 
 ## Transport — Fork-SIL
 
